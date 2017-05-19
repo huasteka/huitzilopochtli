@@ -3,13 +3,9 @@ php:
   - 5.5
   - 5.6
 env:
-  - APP_ENV=testing
-  - APP_DEBUG=true
-  - APP_KEY=29e40da44d41863b92575171ba0996ca8c734898de20014b69979fe98de7ca07
-  - APP_TIMEZONE=UTC
-  - DB_CONNECTION=sqlite
-  - CACHE_DRIVER=file
-  - QUEUE_DRIVER=sync
+  - APP_ENV=testing APP_DEBUG=true APP_KEY=29e40da44d41863b92575171ba0996ca8c734898de20014b69979fe98de7ca07 APP_TIMEZONE=UTC DB_CONNECTION=sqlite CACHE_DRIVER=file QUEUE_DRIVER=sync
+install:
+  - composer install
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.xml
 after_success:
