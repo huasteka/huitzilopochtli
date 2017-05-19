@@ -14,3 +14,10 @@
 $app->get('/', function () use ($app) {
     return $app->version();
 });
+
+$productControllerClass = App\Http\Controllers\ProductController::class;
+$app->post('/api/v1/products', 'ProductController@create');
+$app->put('/api/v1/products/{productId}', 'ProductController@update');
+$app->delete('/api/v1/products/{productId}', 'ProductController@destroy');
+$app->get('/api/v1/products/{productId}', 'ProductController@findOne');
+$app->get('/api/v1/products', 'ProductController@findAll');

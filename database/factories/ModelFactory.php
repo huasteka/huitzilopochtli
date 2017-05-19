@@ -17,3 +17,13 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'email' => $faker->email,
     ];
 });
+
+$factory->define(App\Product::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'code' => $faker->md5,
+        'description' => $faker->paragraph(10),
+        'retail_price' => sprintf('%.2f', $faker->randomFloat(2)),
+        'purchase_price' => sprintf('%.2f', $faker->randomFloat(2)),
+    ];
+});
