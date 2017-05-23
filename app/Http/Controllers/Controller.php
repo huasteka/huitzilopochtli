@@ -13,4 +13,9 @@ class Controller extends BaseController
         return response()->json($jsonResponse->toArray(), $status);
     }
 
+    protected function withStatus($status)
+    {
+        return response()->json([], $status);
+    }
+
 }

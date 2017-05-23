@@ -21,6 +21,7 @@ class CreateProductsTable extends Migration
             $table->decimal('retail_price', 11, 2);
             $table->decimal('purchase_price', 11, 2);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
