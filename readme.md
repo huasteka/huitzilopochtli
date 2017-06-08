@@ -1,21 +1,55 @@
-# Lumen PHP Framework
+# Huitzilopochtli
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://poser.pugx.org/laravel/lumen-framework/d/total.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/lumen-framework/v/stable.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/lumen-framework/v/unstable.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://poser.pugx.org/laravel/lumen-framework/license.svg)](https://packagist.org/packages/laravel/lumen-framework)
+[![Travis](https://img.shields.io/travis/murilocosta/tepoztecatl.svg?style=flat-square)](https://travis-ci.org/murilocosta/tepoztecatl)
+[![GitHub issues](https://img.shields.io/github/issues/murilocosta/tepoztecatl.svg?style=flat-square)](https://github.com/murilocosta/tepoztecatl/issues)
+[![Code Climate](https://img.shields.io/codeclimate/github/murilocosta/tepoztecatl.svg?style=flat-square)](https://codeclimate.com/github/murilocosta/tepoztecatl)
+[![Codecov](https://img.shields.io/codecov/c/github/murilocosta/tepoztecatl.svg?style=flat-square)](https://codecov.io/gh/murilocosta/tepoztecatl)
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+Huitzilopochtli is an open source purchases and sales management API developed with [Lumen Framework](https://lumen.laravel.com/).
 
-## Official Documentation
+## Setup
 
-Documentation for the framework can be found on the [Lumen website](http://lumen.laravel.com/docs).
+- [PostgreSQL](http://www.postgresql.org) (>= 9.3)
+- [PHP](http://php.net) (~ 5.6.14)
+- [Composer](https://getcomposer.org/) (>= 1.2.0)
 
-## Security Vulnerabilities
+## Installation
 
-If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+To download and build the project, open a terminal and execute:
+
+```
+git clone https://github.com/murilocosta/huitzilopochtli.git
+cd huitzilopochtli
+composer install
+```
+
+Run the database migrations with the command: `php artisan migrate`.
+
+To serve the project run: `php -S localhost:8000 -t public` the application will be served at `http://localhost:8000`.
+
+## Configuration
+
+To configure application rename the file `.env.example` to `.env`, and customize your environment:
+
+```
+DB_CONNECTION=[database_driver]
+DB_HOST=[database_host]
+DB_PORT=[database_port]
+DB_DATABASE=[database_name]
+DB_USERNAME=[database_user]
+DB_PASSWORD=[database_password]
+```
+
+## Tests
+
+To execute all tests, open a terminal and execute:
+
+```
+php vendor/bin/phpunit
+```
 
 ## License
 
-The Lumen framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+Huitzilopochtli is Copyright © 2017 Murilo Costa.
+
+It is free software, and may be redistributed under the terms specified in the [LICENSE.md](LICENSE.md)
