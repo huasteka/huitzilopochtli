@@ -27,3 +27,23 @@ $factory->define(App\Product::class, function (Faker\Generator $faker) {
         'purchase_price' => sprintf('%.2f', $faker->randomFloat(2)),
     ];
 });
+
+$factory->define(App\Supplier::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'trade_name' => $faker->company,
+        'legal_document_code' => $faker->md5,
+    ];
+});
+
+$factory->define(App\Contact::class, function (Faker\Generator $faker) {
+    return [
+        'phone' => $faker->phoneNumber,
+        'address' => $faker->streetAddress,
+        'address_complement' => $faker->address,
+        'postal_code' => $faker->postcode,
+        'city' => $faker->city,
+        'region' => $faker->city,
+        'country' => $faker->country,
+    ];
+});

@@ -18,7 +18,6 @@ class Authenticate
      * Create a new middleware instance.
      *
      * @param  \Illuminate\Contracts\Auth\Factory  $auth
-     * @return void
      */
     public function __construct(Auth $auth)
     {
@@ -38,7 +37,7 @@ class Authenticate
         if ($this->auth->guard($guard)->guest()) {
             return response('Unauthorized.', 401);
         }
-
         return $next($request);
     }
+
 }

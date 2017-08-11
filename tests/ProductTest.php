@@ -5,10 +5,7 @@ use Illuminate\Http\Response;
 class ProductTest extends TestCase
 {
 
-    use Laravel\Lumen\Testing\DatabaseMigrations;
-    use Laravel\Lumen\Testing\DatabaseTransactions;
-
-    public function testGetAllRequest()
+    public function testShouldFindAllProductsRequest()
     {
         $productQuantity = 10;
         $productList = factory(App\Product::class)->times($productQuantity)->create();
@@ -24,7 +21,7 @@ class ProductTest extends TestCase
             ]]);
     }
 
-    public function testGetOneRequest()
+    public function testShouldFindOneProductRequest()
     {
         $product = factory(App\Product::class)->create();
         $this->json('GET', "/api/v1/products/{$product->getKey()}")
@@ -36,7 +33,7 @@ class ProductTest extends TestCase
             ->seeJson(['purchase_price' => $product->getAttribute('purchase_price')]);
     }
 
-    public function testPostRequest()
+    public function testShouldCreateProductRequest()
     {
         $product = factory(App\Product::class)->make();
         $productArray = $this->convertObjectToArray($product);
@@ -49,7 +46,7 @@ class ProductTest extends TestCase
             ->seeJson(['purchase_price' => $product->getAttribute('purchase_price')]);
     }
 
-    public function testPutRequest()
+    public function testShouldUpdateProductRequest()
     {
         $product = factory(App\Product::class)->create();
         $product->setAttribute('name', 'This is an updated field');
@@ -59,18 +56,13 @@ class ProductTest extends TestCase
             ->seeInDatabase('products', $productArray);
     }
 
-    public function testDeleteRequest()
+    public function testShouldDestroyProductRequest()
     {
         $product = factory(App\Product::class)->create();
         $productArray = $this->convertObjectToArray($product);
         $this->json('DELETE', "/api/v1/products/{$product->getKey()}")
             ->seeStatusCode(Response::HTTP_NO_CONTENT)
             ->seeInDatabase('products', $productArray);
-    }
-
-    private function convertObjectToArray($object)
-    {
-        return json_decode(json_encode($object), true);
     }
 
 }

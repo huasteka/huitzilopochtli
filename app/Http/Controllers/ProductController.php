@@ -18,13 +18,15 @@ class ProductController extends Controller
 
     public function update(Request $request, $productId)
     {
-        $this->validateRequest($request);
         $product = Product::find($productId);
-        if (!is_null($product)) {
+        if (is_null($product)) {
+            return $this->withStatus(Response::HTTP_BAD_REQUEST);
+        } else {
+            $this->validateRequest($request, ['code' => 'required']);
             $product->fill($this->parseRequest($request));
             $product->save();
+            return $this->withStatus(Response::HTTP_NO_CONTENT);
         }
-        return $this->withStatus(Response::HTTP_NO_CONTENT);
     }
 
     private function validateRequest(Request $request, array $newRules = [])
@@ -39,13 +41,7 @@ class ProductController extends Controller
 
     private function parseRequest(Request $request)
     {
-        return [
-            'name' => $request->get('name'),
-            'code' => $request->get('code'),
-            'description' => $request->get('description'),
-            'retail_price' => $request->get('retail_price'),
-            'purchase_price' => $request->get('purchase_price'),
-        ];
+        return Product::readAttributes($request);
     }
 
     public function destroy($productId)
