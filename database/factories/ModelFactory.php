@@ -36,6 +36,13 @@ $factory->define(App\Supplier::class, function (Faker\Generator $faker) {
     ];
 });
 
+$factory->define(App\Client::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'legal_document_code' => $faker->md5,
+    ];
+});
+
 $factory->define(App\Contact::class, function (Faker\Generator $faker) {
     return [
         'phone' => $faker->phoneNumber,

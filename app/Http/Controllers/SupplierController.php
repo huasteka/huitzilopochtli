@@ -1,38 +1,22 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Contact;
 use App\Services\JsonResponseFormatter;
 use App\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class SupplierController extends Controller
+class SupplierController extends ContactableController
 {
 
     public function create(Request $request)
     {
         $this->validateRequest($request, ['legal_document_code' => 'required|unique:suppliers']);
         $supplier = Supplier::create($this->parseRequest($request));
-        if ($request->has('contacts')) {
+        if ($request->has(self::REQUEST_ATTRIBUTE_CONTACTS)) {
             $supplier->contacts = $supplier->contacts()->saveMany($this->createContactsFromRequest($request));
         }
         return $this->withJson(new JsonResponseFormatter($supplier), Response::HTTP_CREATED);
-    }
-
-    private function createContactsFromRequest(Request $request)
-    {
-        $this->validateContactsRequest($request);
-        $contactList = [];
-        foreach ($request->get('contacts') as $contactRequest) {
-            $contactList[] = $this->createContact($contactRequest);
-        }
-        return $contactList;
-    }
-
-    private function createContact($requestParams)
-    {
-        return (new Contact())->fill(Contact::readAttributes($requestParams));
     }
 
     public function update(Request $request, $supplierId)
@@ -55,19 +39,6 @@ class SupplierController extends Controller
             'trade_name' => 'required',
         ];
         $this->validate($request, array_merge($defaultRules, $newRules));
-    }
-
-    private function validateContactsRequest(Request $request)
-    {
-        $this->validate($request, [
-            'contacts.*.phone' => 'required',
-            'contacts.*.address' => 'required',
-            'contacts.*.address_complement' => 'required',
-            'contacts.*.postal_code' => 'required',
-            'contacts.*.city' => 'required',
-            'contacts.*.region' => 'required',
-            'contacts.*.country' => 'required',
-        ]);
     }
 
     private function parseRequest(Request $request)

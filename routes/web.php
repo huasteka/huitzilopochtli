@@ -26,3 +26,9 @@ $app->put('/api/v1/suppliers/{supplierId}', 'SupplierController@update');
 $app->delete('/api/v1/suppliers/{supplierId}', 'SupplierController@destroy');
 $app->get('/api/v1/suppliers/{supplierId}', 'SupplierController@findOne');
 $app->get('/api/v1/suppliers', 'SupplierController@findAll');
+
+$app->post('/api/v1/clients', 'ClientController@create');
+$app->put('/api/v1/clients/{clientId}', 'ClientController@update');
+$app->delete('/api/v1/clients/{clientId}', 'ClientController@destroy');
+$app->get('/api/v1/clients/{clientId}', 'ClientController@findOne');
+$app->get('/api/v1/clients', 'ClientController@findAll');
