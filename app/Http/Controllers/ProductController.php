@@ -21,12 +21,11 @@ class ProductController extends Controller
         $product = Product::find($productId);
         if (is_null($product)) {
             return $this->withStatus(Response::HTTP_BAD_REQUEST);
-        } else {
-            $this->validateRequest($request, ['code' => 'required']);
-            $product->fill($this->parseRequest($request));
-            $product->save();
-            return $this->withStatus(Response::HTTP_NO_CONTENT);
         }
+        $this->validateRequest($request, ['code' => 'required']);
+        $product->fill($this->parseRequest($request));
+        $product->save();
+        return $this->withStatus(Response::HTTP_NO_CONTENT);
     }
 
     private function validateRequest(Request $request, array $newRules = [])
@@ -47,9 +46,10 @@ class ProductController extends Controller
     public function destroy($productId)
     {
         $product = Product::find($productId);
-        if (!is_null($product)) {
-            $product->delete();
+        if (is_null($product)) {
+            return $this->withStatus(Response::HTTP_BAD_REQUEST);
         }
+        $product->delete();
         return $this->withStatus(Response::HTTP_NO_CONTENT);
     }
 

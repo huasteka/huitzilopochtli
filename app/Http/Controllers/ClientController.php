@@ -25,12 +25,11 @@ class ClientController extends ContactableController
         $client = Client::find($clientId);
         if (is_null($client)) {
             return $this->withStatus(Response::HTTP_NOT_FOUND);
-        } else {
-            $this->validateRequest($request, ['legal_document_code' => 'required']);
-            $client->fill($this->parseRequest($request));
-            $client->save();
-            return $this->withStatus(Response::HTTP_NO_CONTENT);
         }
+        $this->validateRequest($request, ['legal_document_code' => 'required']);
+        $client->fill($this->parseRequest($request));
+        $client->save();
+        return $this->withStatus(Response::HTTP_NO_CONTENT);
     }
 
     private function validateRequest(Request $request, array $newRules = [])
@@ -51,10 +50,9 @@ class ClientController extends ContactableController
         $client = Client::find($clientId);
         if (is_null($client)) {
             return $this->withStatus(Response::HTTP_NOT_FOUND);
-        } else {
-            $client->delete();
-            return $this->withStatus(Response::HTTP_NO_CONTENT);
         }
+        $client->delete();
+        return $this->withStatus(Response::HTTP_NO_CONTENT);
     }
 
     public function findOne($clientId)

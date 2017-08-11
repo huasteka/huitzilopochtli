@@ -24,12 +24,11 @@ class SupplierController extends ContactableController
         $supplier = Supplier::find($supplierId);
         if (is_null($supplier)) {
             return $this->withStatus(Response::HTTP_NOT_FOUND);
-        } else {
-            $this->validateRequest($request, ['legal_document_code' => 'required']);
-            $supplier->fill($this->parseRequest($request));
-            $supplier->save();
-            return $this->withStatus(Response::HTTP_NO_CONTENT);
         }
+        $this->validateRequest($request, ['legal_document_code' => 'required']);
+        $supplier->fill($this->parseRequest($request));
+        $supplier->save();
+        return $this->withStatus(Response::HTTP_NO_CONTENT);
     }
 
     private function validateRequest(Request $request, array $newRules = [])
@@ -51,10 +50,9 @@ class SupplierController extends ContactableController
         $supplier = Supplier::find($supplierId);
         if (is_null($supplier)) {
             return $this->withStatus(Response::HTTP_NOT_FOUND);
-        } else {
-            $supplier->delete();
-            return $this->withStatus(Response::HTTP_NO_CONTENT);
         }
+        $supplier->delete();
+        return $this->withStatus(Response::HTTP_NO_CONTENT);
     }
 
     public function findOne($supplierId)
