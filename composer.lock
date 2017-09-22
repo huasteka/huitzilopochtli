@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "402bd7e3d1dab2230a04da8cc786040e",
-    "content-hash": "dae21f528b20ab489bc46bfb364b803e",
+    "hash": "f8b611168d0907c51ffe5ec1b097e35a",
+    "content-hash": "96c7554e9575f3b182b51d8b26acf4e3",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -1342,6 +1342,61 @@
             "time": "2017-01-23 04:29:33"
         },
         {
+            "name": "neomerx/json-api",
+            "version": "v1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/neomerx/json-api.git",
+                "reference": "6d49cef67181c0976e943337135ab639224e955a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/neomerx/json-api/zipball/6d49cef67181c0976e943337135ab639224e955a",
+                "reference": "6d49cef67181c0976e943337135ab639224e955a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0",
+                "psr/http-message": "^1.0",
+                "psr/log": "^1.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "~0.9.4",
+                "monolog/monolog": "^1.18",
+                "phpmd/phpmd": "^2.6",
+                "phpunit/phpunit": "^4.6 || ^5.0 || ^6.0",
+                "scrutinizer/ocular": "^1.3",
+                "squizlabs/php_codesniffer": "^2.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Neomerx\\JsonApi\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "neomerx",
+                    "email": "info@neomerx.com"
+                }
+            ],
+            "description": "Framework agnostic JSON API (jsonapi.org) implementation",
+            "homepage": "https://github.com/neomerx/json-api",
+            "keywords": [
+                "JSON-API",
+                "api",
+                "json",
+                "jsonapi",
+                "jsonapi.org",
+                "neomerx"
+            ],
+            "time": "2017-09-13 11:23:47"
+        },
+        {
             "name": "nesbot/carbon",
             "version": "1.22.1",
             "source": {
@@ -1484,6 +1539,56 @@
                 "random"
             ],
             "time": "2017-03-13 16:27:32"
+        },
+        {
+            "name": "psr/http-message",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-message.git",
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-message/zipball/f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP messages",
+            "homepage": "https://github.com/php-fig/http-message",
+            "keywords": [
+                "http",
+                "http-message",
+                "psr",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "time": "2016-08-06 14:39:51"
         },
         {
             "name": "psr/log",

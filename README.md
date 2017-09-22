@@ -5,7 +5,7 @@
 [![Code Climate](https://img.shields.io/codeclimate/github/murilocosta/huitzilopochtli.svg?style=flat-square)](https://codeclimate.com/github/murilocosta/huitzilopochtli)
 [![Codecov](https://img.shields.io/codecov/c/github/murilocosta/huitzilopochtli.svg?style=flat-square)](https://codecov.io/gh/murilocosta/huitzilopochtli)
 
-Huitzilopochtli is an open source purchases and sales management API developed with Lumen Framework.
+Huitzilopochtli is an open source purchases and sales management API developed with [Lumen Framework](https://lumen.laravel.com).
 
 ## Setup
 

@@ -14,17 +14,24 @@ class ClientTest extends TestCase
         foreach ($clientList as $clientInDatabase) {
             $this->seeInDatabase('clients', $clientInDatabase);
         }
-        $this->json('GET', '/api/v1/clients')
+        $this->json('GET', '/api/clients')
             ->seeStatusCode(Response::HTTP_OK)
-            ->seeJsonStructure(['result' => [
-                ['name', 'legal_document_code']
-            ]]);
+            ->seeJsonStructure([
+                'data' => [
+                    '*' => [
+                        'attributes' => [
+                            'name',
+                            'legal_document_code'
+                        ]
+                    ]
+                ]
+            ]);
     }
 
     public function testShouldFindOneClientRequest()
     {
         $client = factory(App\Client::class)->create();
-        $this->json('GET', "/api/v1/clients/{$client->getKey()}")
+        $this->json('GET', "/api/clients/{$client->getKey()}")
             ->seeStatusCode(Response::HTTP_OK)
             ->seeJson(['name' => $client->getAttribute('name')])
             ->seeJson(['legal_document_code' => $client->getAttribute('legal_document_code')]);
@@ -34,7 +41,7 @@ class ClientTest extends TestCase
     {
         $client = factory(App\Client::class)->make();
         $clientArray = $this->convertObjectToArray($client);
-        $this->json('POST', '/api/v1/clients', $clientArray)
+        $this->json('POST', '/api/clients', $clientArray)
             ->seeStatusCode(Response::HTTP_CREATED)
             ->seeJson(['name' => $client->getAttribute('name')])
             ->seeJson(['legal_document_code' => $client->getAttribute('legal_document_code')]);
@@ -47,7 +54,7 @@ class ClientTest extends TestCase
         $client = factory(App\Client::class)->make();
         $client->setAttribute('contacts', $contacts);
         $clientArray = $this->convertObjectToArray($client);
-        $httpRequest = $this->json('POST', '/api/v1/clients', $clientArray)
+        $httpRequest = $this->json('POST', '/api/clients', $clientArray)
             ->seeStatusCode(Response::HTTP_CREATED)
             ->seeJson(['name' => $client->getAttribute('name')])
             ->seeJson(['legal_document_code' => $client->getAttribute('legal_document_code')]);
@@ -67,7 +74,7 @@ class ClientTest extends TestCase
         $client = factory(App\Client::class)->create();
         $client->setAttribute('name', 'This is an updated field');
         $clientArray = $this->convertObjectToArray($client);
-        $this->json('PUT', "/api/v1/clients/{$client->getKey()}", $clientArray)
+        $this->json('PUT', "/api/clients/{$client->getKey()}", $clientArray)
             ->seeStatusCode(Response::HTTP_NO_CONTENT)
             ->seeInDatabase('clients', $clientArray);
     }
@@ -76,7 +83,7 @@ class ClientTest extends TestCase
     {
         $client = factory(App\Client::class)->create();
         $clientArray = $this->convertObjectToArray($client);
-        $this->json('DELETE', "/api/v1/clients/{$client->getKey()}")
+        $this->json('DELETE', "/api/clients/{$client->getKey()}")
             ->seeStatusCode(Response::HTTP_NO_CONTENT)
             ->seeInDatabase('clients', $clientArray);
     }

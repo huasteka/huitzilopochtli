@@ -2,18 +2,28 @@
 namespace App\Http\Controllers;
 
 use App\Product;
-use App\Services\JsonResponseFormatter;
+use App\Schemas\ProductSchema;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class ProductController extends Controller
 {
 
-    public function create(Request $request)
+    public function index()
+    {
+        return $this->withJsonApi($this->getEncoder()->encodeData(Product::all()));
+    }
+
+    public function store(Request $request)
     {
         $this->validateRequest($request, ['code' => 'required|unique:products']);
         $product = Product::create($this->parseRequest($request));
-        return $this->withJson(new JsonResponseFormatter($product), Response::HTTP_CREATED);
+        return $this->withJsonApi($this->getEncoder()->encodeData($product), Response::HTTP_CREATED);
+    }
+
+    public function show($productId)
+    {
+        return $this->withJsonApi($this->getEncoder()->encodeData(Product::find($productId)));
     }
 
     public function update(Request $request, $productId)
@@ -25,6 +35,16 @@ class ProductController extends Controller
         $this->validateRequest($request, ['code' => 'required']);
         $product->fill($this->parseRequest($request));
         $product->save();
+        return $this->withStatus(Response::HTTP_NO_CONTENT);
+    }
+
+    public function destroy($productId)
+    {
+        $product = Product::find($productId);
+        if (is_null($product)) {
+            return $this->withStatus(Response::HTTP_BAD_REQUEST);
+        }
+        $product->delete();
         return $this->withStatus(Response::HTTP_NO_CONTENT);
     }
 
@@ -43,24 +63,9 @@ class ProductController extends Controller
         return Product::readAttributes($request);
     }
 
-    public function destroy($productId)
+    private function getEncoder()
     {
-        $product = Product::find($productId);
-        if (is_null($product)) {
-            return $this->withStatus(Response::HTTP_BAD_REQUEST);
-        }
-        $product->delete();
-        return $this->withStatus(Response::HTTP_NO_CONTENT);
-    }
-
-    public function findOne($productId)
-    {
-        return $this->withJson(new JsonResponseFormatter(Product::find($productId)));
-    }
-
-    public function findAll()
-    {
-        return $this->withJson(new JsonResponseFormatter(Product::all()));
+        return $this->createEncoder([Product::class => ProductSchema::class]);
     }
 
 }

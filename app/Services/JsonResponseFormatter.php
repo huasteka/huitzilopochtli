@@ -4,22 +4,22 @@ namespace App\Services;
 class JsonResponseFormatter
 {
 
-    private $result;
+    private $data;
 
     private $meta;
 
     private $errors;
 
-    public function __construct($result = null, $meta = null, $errors = null)
+    public function __construct($data = null, $meta = null, $errors = null)
     {
-        $this->result = $result;
+        $this->data = $data;
         $this->meta = $meta;
         $this->errors = $errors;
     }
 
-    public function getResult()
+    public function getData()
     {
-        return $this->result;
+        return $this->data;
     }
 
     public function getMeta()
@@ -35,8 +35,8 @@ class JsonResponseFormatter
     public function toArray()
     {
         $response = [];
-        if (!empty($this->result)) {
-            $response = array_merge($response, ['result' => $this->result]);
+        if (!empty($this->data)) {
+            $response = array_merge($response, ['data' => $this->data]);
         }
         if (!empty($this->meta)) {
             $response = array_merge($response, ['meta' => $this->meta]);
