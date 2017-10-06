@@ -18,8 +18,6 @@ class CreateProductsTable extends Migration
             $table->string('name');
             $table->string('code');
             $table->text('description')->nullable();
-            $table->decimal('retail_price', 11, 2);
-            $table->decimal('purchase_price', 11, 2);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +30,6 @@ class CreateProductsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('products');
+        Schema::dropIfExists('products');
     }
 }

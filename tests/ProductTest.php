@@ -1,5 +1,6 @@
 <?php
 
+use App\Product;
 use Illuminate\Http\Response;
 
 class ProductTest extends TestCase
@@ -8,7 +9,7 @@ class ProductTest extends TestCase
     public function testShouldFindAllProductsRequest()
     {
         $productQuantity = 10;
-        $productList = factory(App\Product::class)->times($productQuantity)->create();
+        $productList = factory(Product::class)->times($productQuantity)->create();
         $productList = $this->convertObjectToArray($productList);
         assertThat(count($productList), equalTo($productQuantity));
         foreach ($productList as $productInDatabase) {
@@ -20,11 +21,9 @@ class ProductTest extends TestCase
                 'data' => [
                     '*' => [
                         'attributes' => [
-                            'name',
-                            'code',
-                            'description',
-                            'retail_price',
-                            'purchase_price'
+                            Product::NAME,
+                            Product::CODE,
+                            Product::DESCRIPTION,
                         ]
                     ]
                 ]
@@ -37,11 +36,9 @@ class ProductTest extends TestCase
         $this->json('GET', "/api/products/{$product->getKey()}")
             ->seeStatusCode(Response::HTTP_OK)
             ->seeJson(['attributes' => [
-                'name' => $product->getAttribute('name'),
-                'code' => $product->getAttribute('code'),
-                'description' => $product->getAttribute('description'),
-                'retail_price' => $product->getAttribute('retail_price'),
-                'purchase_price' => $product->getAttribute('purchase_price'),
+                Product::NAME => $product->getAttribute(Product::NAME),
+                Product::CODE => $product->getAttribute(Product::CODE),
+                Product::DESCRIPTION => $product->getAttribute(Product::DESCRIPTION),
             ]]);
     }
 
@@ -51,17 +48,15 @@ class ProductTest extends TestCase
         $productArray = $this->convertObjectToArray($product);
         $this->json('POST', '/api/products', $productArray)
             ->seeStatusCode(Response::HTTP_CREATED)
-            ->seeJson(['name' => $product->getAttribute('name')])
-            ->seeJson(['code' => $product->getAttribute('code')])
-            ->seeJson(['description' => $product->getAttribute('description')])
-            ->seeJson(['retail_price' => $product->getAttribute('retail_price')])
-            ->seeJson(['purchase_price' => $product->getAttribute('purchase_price')]);
+            ->seeJson([Product::NAME => $product->getAttribute(Product::NAME)])
+            ->seeJson([Product::CODE => $product->getAttribute(Product::CODE)])
+            ->seeJson([Product::DESCRIPTION => $product->getAttribute(Product::DESCRIPTION)]);
     }
 
     public function testShouldUpdateProductRequest()
     {
         $product = factory(App\Product::class)->create();
-        $product->setAttribute('name', 'This is an updated field');
+        $product->setAttribute(Product::NAME, 'This is an updated field');
         $productArray = $this->convertObjectToArray($product);
         $this->json('PUT', "/api/products/{$product->getKey()}", $productArray)
             ->seeStatusCode(Response::HTTP_NO_CONTENT)

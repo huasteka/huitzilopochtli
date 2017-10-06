@@ -33,11 +33,9 @@ class ProductSchema extends SchemaProvider
     public function getAttributes($resource)
     {
         return [
-            'name' => $resource->getAttribute('name'),
-            'code' => $resource->getAttribute('code'),
-            'description' => $resource->getAttribute('description'),
-            'retail_price' => $resource->getAttribute('retail_price'),
-            'purchase_price' => $resource->getAttribute('purchase_price'),
+            Product::NAME => $resource->getAttribute(Product::NAME),
+            Product::CODE => $resource->getAttribute(Product::CODE),
+            Product::DESCRIPTION => $resource->getAttribute(Product::DESCRIPTION),
         ];
     }
 

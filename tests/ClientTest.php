@@ -1,5 +1,7 @@
 <?php
 
+use App\Client;
+use App\Contact;
 use Illuminate\Http\Response;
 
 class ClientTest extends TestCase
@@ -8,7 +10,7 @@ class ClientTest extends TestCase
     public function testShouldFindAllClientsRequest()
     {
         $clientQuantity = 10;
-        $clientList = factory(App\Client::class)->times($clientQuantity)->create();
+        $clientList = factory(Client::class)->times($clientQuantity)->create();
         $clientList = $this->convertObjectToArray($clientList);
         assertThat(count($clientList), equalTo($clientQuantity));
         foreach ($clientList as $clientInDatabase) {
@@ -20,8 +22,8 @@ class ClientTest extends TestCase
                 'data' => [
                     '*' => [
                         'attributes' => [
-                            'name',
-                            'legal_document_code'
+                            Client::NAME,
+                            Client::LEGAL_DOCUMENT_CODE,
                         ]
                     ]
                 ]
@@ -30,11 +32,11 @@ class ClientTest extends TestCase
 
     public function testShouldFindOneClientRequest()
     {
-        $client = factory(App\Client::class)->create();
+        $client = factory(Client::class)->create();
         $this->json('GET', "/api/clients/{$client->getKey()}")
             ->seeStatusCode(Response::HTTP_OK)
-            ->seeJson(['name' => $client->getAttribute('name')])
-            ->seeJson(['legal_document_code' => $client->getAttribute('legal_document_code')]);
+            ->seeJson([Client::NAME => $client->getAttribute(Client::NAME)])
+            ->seeJson([Client::LEGAL_DOCUMENT_CODE => $client->getAttribute(Client::LEGAL_DOCUMENT_CODE)]);
     }
 
     public function testShouldCreateClientRequest()
@@ -43,36 +45,36 @@ class ClientTest extends TestCase
         $clientArray = $this->convertObjectToArray($client);
         $this->json('POST', '/api/clients', $clientArray)
             ->seeStatusCode(Response::HTTP_CREATED)
-            ->seeJson(['name' => $client->getAttribute('name')])
-            ->seeJson(['legal_document_code' => $client->getAttribute('legal_document_code')]);
+            ->seeJson([Client::NAME => $client->getAttribute(Client::NAME)])
+            ->seeJson([Client::LEGAL_DOCUMENT_CODE => $client->getAttribute(Client::LEGAL_DOCUMENT_CODE)]);
     }
 
     public function testShouldCreateClientWithContactRequest()
     {
         $contactQuantity = 3;
-        $contacts = factory(App\Contact::class)->times($contactQuantity)->make();
-        $client = factory(App\Client::class)->make();
-        $client->setAttribute('contacts', $contacts);
+        $contacts = factory(Contact::class)->times($contactQuantity)->make();
+        $client = factory(Client::class)->make();
+        $client->setAttribute(Client::RELATIONSHIP_CONTACTS, $contacts);
         $clientArray = $this->convertObjectToArray($client);
         $httpRequest = $this->json('POST', '/api/clients', $clientArray)
             ->seeStatusCode(Response::HTTP_CREATED)
-            ->seeJson(['name' => $client->getAttribute('name')])
-            ->seeJson(['legal_document_code' => $client->getAttribute('legal_document_code')]);
-        foreach ($client->getAttribute('contacts') as $contact) {
-            $httpRequest->seeJson(['phone' => $contact->phone]);
-            $httpRequest->seeJson(['address' => $contact->address]);
-            $httpRequest->seeJson(['address_complement' => $contact->address_complement]);
-            $httpRequest->seeJson(['postal_code' => $contact->postal_code]);
-            $httpRequest->seeJson(['city' => $contact->city]);
-            $httpRequest->seeJson(['region' => $contact->region]);
-            $httpRequest->seeJson(['country' => $contact->country]);
+            ->seeJson([Client::NAME => $client->getAttribute(Client::NAME)])
+            ->seeJson([Client::LEGAL_DOCUMENT_CODE => $client->getAttribute(Client::LEGAL_DOCUMENT_CODE)]);
+        foreach ($client->getAttribute(Client::RELATIONSHIP_CONTACTS) as $contact) {
+            $httpRequest->seeJson([Contact::PHONE => $contact->phone]);
+            $httpRequest->seeJson([Contact::ADDRESS => $contact->address]);
+            $httpRequest->seeJson([Contact::ADDRESS_COMPLEMENT => $contact->address_complement]);
+            $httpRequest->seeJson([Contact::POSTAL_CODE => $contact->postal_code]);
+            $httpRequest->seeJson([Contact::CITY => $contact->city]);
+            $httpRequest->seeJson([Contact::REGION => $contact->region]);
+            $httpRequest->seeJson([Contact::COUNTRY => $contact->country]);
         }
     }
 
     public function testShouldUpdateClientRequest()
     {
-        $client = factory(App\Client::class)->create();
-        $client->setAttribute('name', 'This is an updated field');
+        $client = factory(Client::class)->create();
+        $client->setAttribute(Client::NAME, 'This is an updated field');
         $clientArray = $this->convertObjectToArray($client);
         $this->json('PUT', "/api/clients/{$client->getKey()}", $clientArray)
             ->seeStatusCode(Response::HTTP_NO_CONTENT)
@@ -81,7 +83,7 @@ class ClientTest extends TestCase
 
     public function testShouldDestroyClientRequest()
     {
-        $client = factory(App\Client::class)->create();
+        $client = factory(Client::class)->create();
         $clientArray = $this->convertObjectToArray($client);
         $this->json('DELETE', "/api/clients/{$client->getKey()}")
             ->seeStatusCode(Response::HTTP_NO_CONTENT)

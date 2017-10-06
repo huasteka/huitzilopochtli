@@ -10,24 +10,52 @@ final class Supplier extends Model
 
     use SoftDeletes;
 
+    const NAME = 'name';
+    const TRADE_NAME = 'trade_name';
+    const LEGAL_DOCUMENT_CODE = 'legal_document_code';
+
+    const RELATIONSHIP_CONTACTS = 'contacts';
+
     protected $fillable = [
-        'name',
-        'trade_name',
-        'legal_document_code',
+        self::NAME,
+        self::TRADE_NAME,
+        self::LEGAL_DOCUMENT_CODE,
     ];
-    
-    public static function readAttributes(Request $request)
-    {
-        return [
-            'name' => $request->get('name'),
-            'trade_name' => $request->get('trade_name'),
-            'legal_document_code' => $request->get('legal_document_code'),
-        ];
-    }
 
     public function contacts()
     {
         return $this->morphMany(Contact::class, 'contactable');
+    }
+
+    protected static function validationRules()
+    {
+        return [
+            self::NAME => 'required',
+            self::TRADE_NAME => 'required',
+        ];
+    }
+
+    public static function validationRulesOnCreate()
+    {
+        return array_merge(self::validationRules(), [
+            self::LEGAL_DOCUMENT_CODE => 'required|unique:suppliers',
+        ]);
+    }
+
+    public static function validationRulesOnUpdate()
+    {
+        return array_merge(self::validationRules(), [
+            self::LEGAL_DOCUMENT_CODE => 'required',
+        ]);
+    }
+
+    public static function readAttributes(Request $request)
+    {
+        return [
+            self::NAME => $request->get(self::NAME),
+            self::TRADE_NAME => $request->get(self::TRADE_NAME),
+            self::LEGAL_DOCUMENT_CODE => $request->get(self::LEGAL_DOCUMENT_CODE),
+        ];
     }
 
 }

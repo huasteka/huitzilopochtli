@@ -13,44 +13,76 @@
 
 $factory->define(App\User::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->name,
-        'email' => $faker->email,
+        App\User::NAME => $faker->name,
+        App\User::EMAIL => $faker->email,
     ];
 });
 
 $factory->define(App\Product::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->name,
-        'code' => $faker->md5,
-        'description' => $faker->paragraph(10),
-        'retail_price' => sprintf('%.2f', $faker->randomFloat(2)),
-        'purchase_price' => sprintf('%.2f', $faker->randomFloat(2)),
+        App\Product::NAME => $faker->name,
+        App\Product::CODE => $faker->md5,
+        App\Product::DESCRIPTION => $faker->paragraph(10),
+
+    ];
+});
+
+$factory->define(App\Merchandise::class, function (Faker\Generator $faker) {
+    return [
+        App\Merchandise::RETAIL_PRICE => sprintf('%.2f', $faker->randomFloat(2)),
+        App\Merchandise::PURCHASE_PRICE => sprintf('%.2f', $faker->randomFloat(2)),
     ];
 });
 
 $factory->define(App\Supplier::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->name,
-        'trade_name' => $faker->company,
-        'legal_document_code' => $faker->md5,
+        App\Supplier::NAME => $faker->name,
+        App\Supplier::TRADE_NAME => $faker->company,
+        App\Supplier::LEGAL_DOCUMENT_CODE => $faker->md5,
     ];
 });
 
 $factory->define(App\Client::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->name,
-        'legal_document_code' => $faker->md5,
+        App\Client::NAME => $faker->name,
+        App\Client::LEGAL_DOCUMENT_CODE => $faker->md5,
     ];
 });
 
 $factory->define(App\Contact::class, function (Faker\Generator $faker) {
     return [
-        'phone' => $faker->phoneNumber,
-        'address' => $faker->streetAddress,
-        'address_complement' => $faker->address,
-        'postal_code' => $faker->postcode,
-        'city' => $faker->city,
-        'region' => $faker->city,
-        'country' => $faker->country,
+        App\Contact::PHONE => $faker->phoneNumber,
+        App\Contact::ADDRESS => $faker->streetAddress,
+        App\Contact::ADDRESS_COMPLEMENT => $faker->address,
+        App\Contact::POSTAL_CODE => $faker->postcode,
+        App\Contact::CITY => $faker->city,
+        App\Contact::REGION => $faker->city,
+        App\Contact::COUNTRY => $faker->country,
+    ];
+});
+
+$factory->define(App\Purchase::class, function (Faker\Generator $faker) {
+    return [
+        App\Purchase::CODE => $faker->md5,
+        App\Purchase::DESCRIPTION => $faker->paragraph(5),
+        App\Purchase::GROSS_VALUE => sprintf('%.2f', $faker->randomFloat(2)),
+        App\Purchase::NET_VALUE => sprintf('%.2f', $faker->randomFloat(2)),
+        App\Purchase::DISCOUNT => sprintf('%.2f', $faker->randomFloat(2)),
+    ];
+});
+
+$factory->define(App\DeliveryAddress::class, function (Faker\Generator $faker) {
+    return [
+        App\DeliveryAddress::IS_DEFAULT => $faker->boolean,
+    ];
+});
+
+$factory->define(App\Delivery::class, function (Faker\Generator $faker) {
+    $dateTime = $faker->dateTime;
+    $deliveryTime = $faker->numberBetween(1, 30);
+    return [
+        App\Delivery::SENT_AT => $dateTime,
+        App\Delivery::ARRIVED_AT => $dateTime->add(new \DateInterval("P{$deliveryTime}D")),
+        App\Delivery::DELIVERY_TIME => $deliveryTime,
     ];
 });

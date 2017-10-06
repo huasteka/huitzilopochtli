@@ -32,25 +32,31 @@ class ClientSchema extends SchemaProvider
     public function getAttributes($resource)
     {
         return [
-            'name' => $resource->getAttribute('name'),
-            'legal_document_code' => $resource->getAttribute('legal_document_code'),
+            Client::NAME => $resource->getAttribute(Client::NAME),
+            Client::LEGAL_DOCUMENT_CODE => $resource->getAttribute(Client::LEGAL_DOCUMENT_CODE),
         ];
     }
 
+    /**
+     * @param Client $resource
+     * @param bool $isPrimary
+     * @param array $includeRelationships
+     * @return array
+     */
     public function getRelationships($resource, $isPrimary, array $includeRelationships)
     {
         return [
-            'contacts' => [
+            Client::RELATIONSHIP_CONTACTS => [
                 self::DATA => function () use ($resource) {
                     return $resource->contacts()->getEager();
                 }
-            ]
+            ],
         ];
     }
 
     public function getIncludePaths()
     {
-        return ['contacts'];
+        return [Client::RELATIONSHIP_CONTACTS];
     }
 
 }

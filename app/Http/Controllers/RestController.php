@@ -8,7 +8,7 @@ use Neomerx\JsonApi\Contracts\Encoder\EncoderInterface;
 use Neomerx\JsonApi\Encoder\Encoder;
 use Neomerx\JsonApi\Encoder\EncoderOptions;
 
-abstract class Controller extends BaseController
+abstract class RestController extends BaseController
 {
 
     protected function withJson(JsonResponseFormatter $jsonResponse, $status = 200)

@@ -32,13 +32,13 @@ class ContactSchema extends SchemaProvider
     public function getAttributes($resource)
     {
         return [
-            'phone' => $resource->getAttribute('phone'),
-            'address' => $resource->getAttribute('address'),
-            'address_complement' => $resource->getAttribute('address_complement'),
-            'postal_code' => $resource->getAttribute('postal_code'),
-            'city' => $resource->getAttribute('city'),
-            'region' => $resource->getAttribute('region'),
-            'country' => $resource->getAttribute('country'),
+            Contact::PHONE => $resource->getAttribute(Contact::PHONE),
+            Contact::ADDRESS => $resource->getAttribute(Contact::ADDRESS),
+            Contact::ADDRESS_COMPLEMENT => $resource->getAttribute(Contact::ADDRESS_COMPLEMENT),
+            Contact::POSTAL_CODE => $resource->getAttribute(Contact::POSTAL_CODE),
+            Contact::COUNTRY => $resource->getAttribute(Contact::COUNTRY),
+            Contact::REGION => $resource->getAttribute(Contact::REGION),
+            Contact::CITY => $resource->getAttribute(Contact::CITY),
         ];
     }
 

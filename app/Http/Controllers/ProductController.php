@@ -6,7 +6,7 @@ use App\Schemas\ProductSchema;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class ProductController extends Controller
+final class ProductController extends StandardController
 {
 
     public function index()
@@ -16,7 +16,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $this->validateRequest($request, ['code' => 'required|unique:products']);
+        $this->validateRequest($request, Product::validationRulesOnCreate());
         $product = Product::create($this->parseRequest($request));
         return $this->withJsonApi($this->getEncoder()->encodeData($product), Response::HTTP_CREATED);
     }
@@ -30,9 +30,9 @@ class ProductController extends Controller
     {
         $product = Product::find($productId);
         if (is_null($product)) {
-            return $this->withStatus(Response::HTTP_BAD_REQUEST);
+            return $this->withStatus(Response::HTTP_NOT_FOUND);
         }
-        $this->validateRequest($request, ['code' => 'required']);
+        $this->validateRequest($request, Product::validationRulesOnUpdate());
         $product->fill($this->parseRequest($request));
         $product->save();
         return $this->withStatus(Response::HTTP_NO_CONTENT);
@@ -42,23 +42,13 @@ class ProductController extends Controller
     {
         $product = Product::find($productId);
         if (is_null($product)) {
-            return $this->withStatus(Response::HTTP_BAD_REQUEST);
+            return $this->withStatus(Response::HTTP_NOT_FOUND);
         }
         $product->delete();
         return $this->withStatus(Response::HTTP_NO_CONTENT);
     }
 
-    private function validateRequest(Request $request, array $newRules = [])
-    {
-        $defaultRules = [
-            'name' => 'required',
-            'retail_price' => 'required',
-            'purchase_price' => 'required',
-        ];
-        $this->validate($request, array_merge($defaultRules, $newRules));
-    }
-
-    private function parseRequest(Request $request)
+    protected function parseRequest(Request $request)
     {
         return Product::readAttributes($request);
     }

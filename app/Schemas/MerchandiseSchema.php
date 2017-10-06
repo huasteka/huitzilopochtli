@@ -1,19 +1,18 @@
 <?php
-
 namespace App\Schemas;
 
-use App\Supplier;
+use App\Merchandise;
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
-class SupplierSchema extends SchemaProvider
+class MerchandiseSchema extends SchemaProvider
 {
 
-    protected $resourceType = 'suppliers';
+    protected $resourceType = 'merchandises';
 
     /**
      * Get resource identity.
      *
-     * @param Supplier $resource
+     * @param Merchandise $resource
      *
      * @return string
      */
@@ -25,21 +24,20 @@ class SupplierSchema extends SchemaProvider
     /**
      * Get resource attributes.
      *
-     * @param Supplier $resource
+     * @param Merchandise $resource
      *
      * @return array
      */
     public function getAttributes($resource)
     {
         return [
-            Supplier::NAME => $resource->getAttribute(Supplier::NAME),
-            Supplier::TRADE_NAME => $resource->getAttribute(Supplier::TRADE_NAME),
-            Supplier::LEGAL_DOCUMENT_CODE => $resource->getAttribute(Supplier::LEGAL_DOCUMENT_CODE),
+            Merchandise::RETAIL_PRICE => $resource->getAttribute(Merchandise::RETAIL_PRICE),
+            Merchandise::PURCHASE_PRICE => $resource->getAttribute(Merchandise::PURCHASE_PRICE),
         ];
     }
 
     /**
-     * @param Supplier $resource
+     * @param Merchandise $resource
      * @param bool $isPrimary
      * @param array $includeRelationships
      * @return array
@@ -47,9 +45,9 @@ class SupplierSchema extends SchemaProvider
     public function getRelationships($resource, $isPrimary, array $includeRelationships)
     {
         return [
-            Supplier::RELATIONSHIP_CONTACTS => [
+            Merchandise::RELATIONSHIP_PRODUCT => [
                 self::DATA => function () use ($resource) {
-                    return $resource->contacts()->getEager();
+                    return $resource->product()->getEager();
                 }
             ],
         ];
@@ -57,7 +55,7 @@ class SupplierSchema extends SchemaProvider
 
     public function getIncludePaths()
     {
-        return [Supplier::RELATIONSHIP_CONTACTS];
+        return [Merchandise::RELATIONSHIP_PRODUCT];
     }
 
 }

@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers;
 
-
 use App\Client;
 use App\Contact;
 use App\Schemas\ClientSchema;
@@ -19,7 +18,7 @@ class ClientController extends ContactableController
 
     public function store(Request $request)
     {
-        $this->validateRequest($request, ['legal_document_code' => 'required|unique:clients']);
+        $this->validateRequest($request, Client::validationRulesOnCreate());
         $client = Client::create($this->parseRequest($request));
         if ($request->has(self::REQUEST_ATTRIBUTE_CONTACTS)) {
             $client->contacts = $client->contacts()->saveMany($this->createContactsFromRequest($request));
@@ -38,7 +37,7 @@ class ClientController extends ContactableController
         if (is_null($client)) {
             return $this->withStatus(Response::HTTP_NOT_FOUND);
         }
-        $this->validateRequest($request, ['legal_document_code' => 'required']);
+        $this->validateRequest($request, Client::validationRulesOnUpdate());
         $client->fill($this->parseRequest($request));
         $client->save();
         return $this->withStatus(Response::HTTP_NO_CONTENT);
@@ -54,15 +53,7 @@ class ClientController extends ContactableController
         return $this->withStatus(Response::HTTP_NO_CONTENT);
     }
 
-    private function validateRequest(Request $request, array $newRules = [])
-    {
-        $defaultRules = [
-            'name' => 'required',
-        ];
-        $this->validate($request, array_merge($defaultRules, $newRules));
-    }
-
-    private function parseRequest(Request $request)
+    protected function parseRequest(Request $request)
     {
         return Client::readAttributes($request);
     }

@@ -9,23 +9,44 @@ final class Product extends Model
 {
 
     use SoftDeletes;
+    
+    const NAME = 'name';
+    const CODE = 'code';
+    const DESCRIPTION = 'description';
 
     protected $fillable = [
-        'name', 
-        'code', 
-        'description', 
-        'retail_price', 
-        'purchase_price',
+        self::NAME, 
+        self::CODE, 
+        self::DESCRIPTION,
     ];
+    
+    protected static function validationRules()
+    {
+        return [
+            self::NAME => 'required',
+        ];
+    }
+    
+    public static function validationRulesOnCreate()
+    {
+        return array_merge(self::validationRules(), [
+            self::CODE => 'required|unique:products',
+        ]);
+    }
+    
+    public static function validationRulesOnUpdate()
+    {
+        return array_merge(self::validationRules(), [
+            Product::CODE => 'required',
+        ]);
+    }
     
     public static function readAttributes(Request $request)
     {
         return [
-            'name' => $request->get('name'),
-            'code' => $request->get('code'),
-            'description' => $request->get('description'),
-            'retail_price' => $request->get('retail_price'),
-            'purchase_price' => $request->get('purchase_price'),
+            self::NAME => $request->get(self::NAME),
+            self::CODE => $request->get(self::CODE),
+            self::DESCRIPTION=> $request->get(self::DESCRIPTION),
         ];
     }
 

@@ -8,7 +8,7 @@ use App\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class SupplierController extends ContactableController
+class SupplierController extends StandardController
 {
 
     public function index()
@@ -18,7 +18,7 @@ class SupplierController extends ContactableController
 
     public function store(Request $request)
     {
-        $this->validateRequest($request, ['legal_document_code' => 'required|unique:suppliers']);
+        $this->validateRequest($request, Supplier::validationRulesOnCreate());
         $supplier = Supplier::create($this->parseRequest($request));
         if ($request->has(self::REQUEST_ATTRIBUTE_CONTACTS)) {
             $supplier->contacts = $supplier->contacts()->saveMany($this->createContactsFromRequest($request));
@@ -37,7 +37,7 @@ class SupplierController extends ContactableController
         if (is_null($supplier)) {
             return $this->withStatus(Response::HTTP_NOT_FOUND);
         }
-        $this->validateRequest($request, ['legal_document_code' => 'required']);
+        $this->validateRequest($request, Supplier::validationRulesOnUpdate());
         $supplier->fill($this->parseRequest($request));
         $supplier->save();
         return $this->withStatus(Response::HTTP_NO_CONTENT);
@@ -53,16 +53,7 @@ class SupplierController extends ContactableController
         return $this->withStatus(Response::HTTP_NO_CONTENT);
     }
 
-    private function validateRequest(Request $request, array $newRules = [])
-    {
-        $defaultRules = [
-            'name' => 'required',
-            'trade_name' => 'required',
-        ];
-        $this->validate($request, array_merge($defaultRules, $newRules));
-    }
-
-    private function parseRequest(Request $request)
+    protected function parseRequest(Request $request)
     {
         return Supplier::readAttributes($request);
     }
