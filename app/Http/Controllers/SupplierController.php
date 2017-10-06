@@ -8,7 +8,7 @@ use App\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class SupplierController extends StandardController
+class SupplierController extends ContactableController
 {
 
     public function index()

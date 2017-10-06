@@ -14,8 +14,8 @@ final class Contact extends Model
     const REGION = 'region';
     const COUNTRY = 'country';
     
-    const CONTACTABLE_ID = '';
-    const CONTACTABLE_TYPE = '';
+    const CONTACTABLE_ID = 'contactable_id';
+    const CONTACTABLE_TYPE = 'contactable_type';
 
     protected $fillable = [
         self::PHONE,

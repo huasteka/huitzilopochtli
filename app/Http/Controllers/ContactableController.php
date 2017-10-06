@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 abstract class ContactableController extends StandardController
 {
-    
+
     const REQUEST_ATTRIBUTE_CONTACTS = 'contacts';
 
     protected function createContactsFromRequest(Request $request)
@@ -27,13 +27,13 @@ abstract class ContactableController extends StandardController
     protected function validateContactsRequest(Request $request)
     {
         $this->validate($request, [
-            "contacts.*.{${Contact::PHONE}}" => 'required',
-            "contacts.*.{${Contact::ADDRESS}}" => 'required',
-            "contacts.*.{${Contact::ADDRESS_COMPLEMENT}}" => 'required',
-            "contacts.*.{${Contact::POSTAL_CODE}}" => 'required',
-            "contacts.*.{${Contact::CITY}}" => 'required',
-            "contacts.*.{${Contact::REGION}}" => 'required',
-            "contacts.*.{${Contact::COUNTRY}}" => 'required',
+            'contacts.*.' . Contact::PHONE => 'required',
+            'contacts.*.' . Contact::ADDRESS => 'required',
+            'contacts.*.' . Contact::ADDRESS_COMPLEMENT => 'required',
+            'contacts.*.' . Contact::POSTAL_CODE => 'required',
+            'contacts.*.' . Contact::CITY => 'required',
+            'contacts.*.' . Contact::REGION => 'required',
+            'contacts.*.' . Contact::COUNTRY => 'required',
         ]);
     }
 
