@@ -73,13 +73,19 @@ class SupplierTest extends TestCase
 
     public function testShouldUpdateSupplierRequest()
     {
+        $updatedName = 'This is an updated field';
+        $updatedTradeName = 'This is another updated field';
         $supplier = factory(App\Supplier::class)->create();
-        $supplier->setAttribute(App\Supplier::NAME, 'This is an updated field');
-        $supplier->setAttribute(App\Supplier::TRADE_NAME, 'This is another updated field');
+        $supplier->setAttribute(App\Supplier::NAME, $updatedName);
+        $supplier->setAttribute(App\Supplier::TRADE_NAME, $updatedTradeName);
         $supplierArray = $this->convertObjectToArray($supplier);
         $this->json('PUT', "/api/suppliers/{$supplier->getKey()}", $supplierArray)
             ->seeStatusCode(Illuminate\Http\Response::HTTP_NO_CONTENT)
-            ->seeInDatabase('suppliers', $supplierArray);
+            ->seeInDatabase('suppliers', [
+                'id' => $supplier->getKey(),
+                App\Supplier::NAME => $updatedName,
+                App\Supplier::TRADE_NAME => $updatedTradeName
+            ]);
     }
 
     public function testShouldDestroySupplierRequest()

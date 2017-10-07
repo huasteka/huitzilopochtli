@@ -33,24 +33,29 @@ class SupplierController extends ContactableController
 
     public function update(Request $request, $supplierId)
     {
-        $supplier = Supplier::find($supplierId);
-        if (is_null($supplier)) {
-            return $this->withStatus(Response::HTTP_NOT_FOUND);
-        }
-        $this->validateRequest($request, Supplier::validationRulesOnUpdate());
-        $supplier->fill($this->parseRequest($request));
-        $supplier->save();
-        return $this->withStatus(Response::HTTP_NO_CONTENT);
+        return $this->findSupplierAndExecuteCallback($supplierId, function (Supplier $supplier) use ($request) {
+            $this->validateRequest($request, Supplier::validationRulesOnUpdate());
+            $supplier->fill($this->parseRequest($request));
+            $supplier->save();
+            return $this->withStatus(Response::HTTP_NO_CONTENT);
+        });
     }
 
     public function destroy($supplierId)
+    {
+        return $this->findSupplierAndExecuteCallback($supplierId, function (Supplier $supplier) {
+            $supplier->delete();
+            return $this->withStatus(Response::HTTP_NO_CONTENT);
+        });
+    }
+    
+    private function findSupplierAndExecuteCallback($supplierId, callable $callback)
     {
         $supplier = Supplier::find($supplierId);
         if (is_null($supplier)) {
             return $this->withStatus(Response::HTTP_NOT_FOUND);
         }
-        $supplier->delete();
-        return $this->withStatus(Response::HTTP_NO_CONTENT);
+        return $callback($supplier);
     }
 
     protected function parseRequest(Request $request)

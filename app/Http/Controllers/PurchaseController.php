@@ -2,7 +2,6 @@
 namespace App\Http\Controllers;
 
 use App\Merchandise;
-use App\MerchandisePurchase;
 use App\Purchase;
 use App\Schemas\MerchandiseSchema;
 use App\Schemas\PurchaseSchema;

@@ -16,66 +16,32 @@ $app->get('/', function () use ($app) {
 });
 
 $app->group(['prefix' => 'api'], function () use ($app) {
-    $app->get('/products', [
-        'as' => 'products.index',
-        'uses' => 'ProductController@index',
-    ]);
-    $app->post('/products', [
-        'as' => 'products.store',
-        'uses' => 'ProductController@store',
-    ]);
-    $app->get('/products/{productId}', [
-        'as' => 'products.show',
-        'uses' => 'ProductController@show',
-    ]);
-    $app->put('/products/{productId}', [
-        'as' => 'products.update',
-        'uses' => 'ProductController@update',
-    ]);
-    $app->delete('/products/{productId}', [
-        'as' => 'products.destroy',
-        'uses' => 'ProductController@destroy',
-    ]);
+    $createRestResource = function (Laravel\Lumen\Application $app, $controller, $resource_name, $resource_id) {
+        $app->get("/{$resource_name}", [
+            'as' => "{$resource_name}.index",
+            'uses' => "{$controller}@index",
+        ]);
+        $app->post("/{$resource_name}", [
+            'as' => "{$resource_name}.store",
+            'uses' => "{$controller}@store",
+        ]);
+        $app->get("/{$resource_name}/{{$resource_id}}", [
+            'as' => "{$resource_name}.show",
+            'uses' => "{$controller}@show",
+        ]);
+        $app->put("/{$resource_name}/{{$resource_id}}", [
+            'as' => "{$resource_name}.update",
+            'uses' => "{$controller}@update",
+        ]);
+        $app->delete("/{$resource_name}/{{$resource_id}}", [
+            'as' => "{$resource_name}.destroy",
+            'uses' => "{$controller}@destroy",
+        ]);
+    };
 
-    $app->get('/suppliers', [
-        'as' => 'suppliers.index',
-        'uses' => 'SupplierController@index',
-    ]);
-    $app->post('/suppliers', [
-        'as' => 'suppliers.store',
-        'uses' => 'SupplierController@store',
-    ]);
-    $app->get('/suppliers/{supplierId}', [
-        'as' => 'suppliers.show',
-        'uses' => 'SupplierController@show',
-    ]);
-    $app->put('/suppliers/{supplierId}', [
-        'as' => 'suppliers.update',
-        'uses' => 'SupplierController@update',
-    ]);
-    $app->delete('/suppliers/{supplierId}', [
-        'as' => 'suppliers.destroy',
-        'uses' => 'SupplierController@destroy',
-    ]);
-
-    $app->get('/clients', [
-        'as' => 'clients.index',
-        'uses' => 'ClientController@index',
-    ]);
-    $app->post('/clients', [
-        'as' => 'clients.store',
-        'uses' => 'ClientController@store',
-    ]);
-    $app->get('/clients/{clientId}', [
-        'as' => 'clients.show',
-        'uses' => 'ClientController@show',
-    ]);
-    $app->put('/clients/{clientId}', [
-        'as' => 'clients.update',
-        'uses' => 'ClientController@update',
-    ]);
-    $app->delete('/clients/{clientId}', [
-        'as' => 'clients.destroy',
-        'uses' => 'ClientController@destroy',
-    ]);
+    $createRestResource($app, 'ProductController', 'products', 'productId');
+    $createRestResource($app, 'SupplierController', 'suppliers', 'supplierId');
+    $createRestResource($app, 'ClientController', 'clients', 'clientId');
+    $createRestResource($app, 'MerchandiseController', 'merchandises', 'merchandiseId');
+    $createRestResource($app, 'DeliveryAddressController', 'delivery_addresses', 'deliveryAddressId');
 });

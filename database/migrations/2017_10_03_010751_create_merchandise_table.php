@@ -20,6 +20,7 @@ class CreateMerchandiseTable extends Migration
             $table->decimal('purchase_price', 11, 2);
             $table->boolean('is_active');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('product_id')->references('id')->on('products');
         });

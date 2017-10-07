@@ -33,24 +33,29 @@ class ClientController extends ContactableController
 
     public function update(Request $request, $clientId)
     {
-        $client = Client::find($clientId);
-        if (is_null($client)) {
-            return $this->withStatus(Response::HTTP_NOT_FOUND);
-        }
-        $this->validateRequest($request, Client::validationRulesOnUpdate());
-        $client->fill($this->parseRequest($request));
-        $client->save();
-        return $this->withStatus(Response::HTTP_NO_CONTENT);
+        return $this->findClientAndExecuteCallback($clientId, function (Client $client) use ($request) {
+            $this->validateRequest($request, Client::validationRulesOnUpdate());
+            $client->fill($this->parseRequest($request));
+            $client->save();
+            return $this->withStatus(Response::HTTP_NO_CONTENT);
+        });
     }
 
     public function destroy($clientId)
+    {
+        return $this->findClientAndExecuteCallback($clientId, function (Client $client) {
+            $client->delete();
+            return $this->withStatus(Response::HTTP_NO_CONTENT);
+        });
+    }
+    
+    private function findClientAndExecuteCallback($clientId, callable $callback)
     {
         $client = Client::find($clientId);
         if (is_null($client)) {
             return $this->withStatus(Response::HTTP_NOT_FOUND);
         }
-        $client->delete();
-        return $this->withStatus(Response::HTTP_NO_CONTENT);
+        return $callback($client);
     }
 
     protected function parseRequest(Request $request)

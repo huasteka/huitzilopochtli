@@ -9,19 +9,20 @@ abstract class ContactableController extends StandardController
 
     const REQUEST_ATTRIBUTE_CONTACTS = 'contacts';
 
-    protected function createContactsFromRequest(Request $request)
+    protected function createContactsFromRequest(Request $request, $toArray = false)
     {
         $this->validateContactsRequest($request);
         $contactList = [];
         foreach ($request->get(self::REQUEST_ATTRIBUTE_CONTACTS) as $contactRequest) {
-            $contactList[] = $this->createContact($contactRequest);
+            $contactList[] = $this->createContact($contactRequest, $toArray);
         }
         return $contactList;
     }
 
-    protected function createContact($requestParams)
+    protected function createContact($requestParams, $toArray)
     {
-        return (new Contact())->fill(Contact::readAttributes($requestParams));
+        $contactArray = Contact::readAttributes($requestParams);
+        return ($toArray) ? $contactArray : (new Contact())->fill($contactArray);
     }
 
     protected function validateContactsRequest(Request $request)

@@ -26,11 +26,31 @@ final class Merchandise extends Model
         return $this->belongsTo(Product::class);
     }
 
+    public function setActive()
+    {
+        $this->setAttribute(self::IS_ACTIVE, true);
+    }
+
+    public function setNotActive()
+    {
+        $this->setAttribute(self::IS_ACTIVE, false);
+    }
+
+    public static function validationRulesOnCreateAndUpdate()
+    {
+        return [self::RETAIL_PRICE => 'required|min:0'];
+    }
+
+    public static function validationRulesOnCreateProduct()
+    {
+        return ['product_id' => 'required|exists:products,id'];
+    }
+
     public static function readAttributes(Request $request)
     {
         return [
             self::RETAIL_PRICE => $request->get(self::RETAIL_PRICE),
-            self::PURCHASE_PRICE => $request->get(self::PURCHASE_PRICE),
+            self::PURCHASE_PRICE => $request->get(self::PURCHASE_PRICE, 0.00),
         ];
     }
     

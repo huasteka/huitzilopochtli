@@ -13,6 +13,8 @@ final class Product extends Model
     const NAME = 'name';
     const CODE = 'code';
     const DESCRIPTION = 'description';
+    
+    const RELATIONSHIP_MERCHANDISES = 'merchandises';
 
     protected $fillable = [
         self::NAME, 
@@ -20,25 +22,24 @@ final class Product extends Model
         self::DESCRIPTION,
     ];
     
+    public function merchandises()
+    {
+        return $this->hasMany(Merchandise::class, 'product_id');
+    }
+    
     protected static function validationRules()
     {
-        return [
-            self::NAME => 'required',
-        ];
+        return [self::NAME => 'required'];
     }
     
     public static function validationRulesOnCreate()
     {
-        return array_merge(self::validationRules(), [
-            self::CODE => 'required|unique:products',
-        ]);
+        return array_merge(self::validationRules(), [self::CODE => 'required|unique:products']);
     }
     
     public static function validationRulesOnUpdate()
     {
-        return array_merge(self::validationRules(), [
-            Product::CODE => 'required',
-        ]);
+        return array_merge(self::validationRules(), [Product::CODE => 'required']);
     }
     
     public static function readAttributes(Request $request)

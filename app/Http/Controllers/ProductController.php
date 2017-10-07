@@ -28,24 +28,29 @@ final class ProductController extends StandardController
 
     public function update(Request $request, $productId)
     {
-        $product = Product::find($productId);
-        if (is_null($product)) {
-            return $this->withStatus(Response::HTTP_NOT_FOUND);
-        }
-        $this->validateRequest($request, Product::validationRulesOnUpdate());
-        $product->fill($this->parseRequest($request));
-        $product->save();
-        return $this->withStatus(Response::HTTP_NO_CONTENT);
+        return $this->findProductAndExecuteCallback($productId, function (Product $product) use ($request) {
+            $this->validateRequest($request, Product::validationRulesOnUpdate());
+            $product->fill($this->parseRequest($request));
+            $product->save();
+            return $this->withStatus(Response::HTTP_NO_CONTENT);
+        });
     }
 
     public function destroy($productId)
+    {
+        return $this->findProductAndExecuteCallback($productId, function (Product $product) {
+            $product->delete();
+            return $this->withStatus(Response::HTTP_NO_CONTENT);
+        });
+    }
+    
+    private function findProductAndExecuteCallback($productId, callable $callback)
     {
         $product = Product::find($productId);
         if (is_null($product)) {
             return $this->withStatus(Response::HTTP_NOT_FOUND);
         }
-        $product->delete();
-        return $this->withStatus(Response::HTTP_NO_CONTENT);
+        return $callback($product);
     }
 
     protected function parseRequest(Request $request)

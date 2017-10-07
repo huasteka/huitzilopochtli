@@ -29,6 +29,7 @@ $factory->define(App\Product::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Merchandise::class, function (Faker\Generator $faker) {
     return [
+        App\Merchandise::IS_ACTIVE => $faker->boolean,
         App\Merchandise::RETAIL_PRICE => sprintf('%.2f', $faker->randomFloat(2)),
         App\Merchandise::PURCHASE_PRICE => sprintf('%.2f', $faker->randomFloat(2)),
     ];
