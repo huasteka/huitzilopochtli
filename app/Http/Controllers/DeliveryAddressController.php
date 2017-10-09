@@ -5,12 +5,15 @@ use App\Contact;
 use App\DeliveryAddress;
 use App\Schemas\ContactSchema;
 use App\Schemas\DeliveryAddressSchema;
+use App\Services\DeliveryAddressService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class DeliveryAddressController extends ContactableController
 {
+    
+    private $deliveryAddressService;
 
     public function index()
     {
@@ -19,10 +22,8 @@ class DeliveryAddressController extends ContactableController
 
     public function store(Request $request)
     {
-        $deliveryAddress = DeliveryAddress::create($this->parseRequest($request));
-        if ($request->has(self::REQUEST_ATTRIBUTE_CONTACTS)) {
-            $deliveryAddress->contacts = $deliveryAddress->contacts()->saveMany($this->createContactsFromRequest($request));
-        }
+        $this->validate($request, $this->getDeliveryAddressService()->getValidationRulesOnCreateAndUpdate($request));
+        $deliveryAddress = $this->getDeliveryAddressService()->store($request);
         return $this->withJsonApi($this->getEncoder()->encodeData($deliveryAddress), Response::HTTP_CREATED);
     }
 
@@ -34,14 +35,7 @@ class DeliveryAddressController extends ContactableController
     public function update(Request $request, $deliveryAddressId)
     {
         return $this->findDeliveryAddressAndExecuteCallback($deliveryAddressId, function (DeliveryAddress $deliveryAddress) use ($request) {
-            if ($request->has(self::REQUEST_ATTRIBUTE_CONTACTS)) {
-                $contactArray = $this->createContactsFromRequest($request, true);
-                $contact = $deliveryAddress->contacts()->first();
-                $contact->fill(array_pop($contactArray));
-                $contact->save();
-            }
-            $deliveryAddress->fill($this->parseRequest($request));
-            $deliveryAddress->save();
+            $this->getDeliveryAddressService()->update($request, $deliveryAddress);
             return $this->withStatus(Response::HTTP_NO_CONTENT);
         });
     }
@@ -64,11 +58,6 @@ class DeliveryAddressController extends ContactableController
         }
         return $callback($deliveryAddress);
     }
-
-    protected function parseRequest(Request $request)
-    {
-        return DeliveryAddress::readAttributes($request);
-    }
     
     private function getEncoder()
     {
@@ -76,6 +65,14 @@ class DeliveryAddressController extends ContactableController
             DeliveryAddress::class => DeliveryAddressSchema::class,
             Contact::class => ContactSchema::class,
         ]);
+    }
+
+    public function getDeliveryAddressService()
+    {
+        if (is_null($this->deliveryAddressService)) {
+            $this->deliveryAddressService = new DeliveryAddressService();
+        }
+        return $this->deliveryAddressService;
     }
     
 }

@@ -3,17 +3,16 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Http\Request;
 
 final class Product extends Model
 {
 
     use SoftDeletes;
-    
+
     const NAME = 'name';
     const CODE = 'code';
     const DESCRIPTION = 'description';
-    
+
     const RELATIONSHIP_MERCHANDISES = 'merchandises';
 
     protected $fillable = [
@@ -21,34 +20,20 @@ final class Product extends Model
         self::CODE, 
         self::DESCRIPTION,
     ];
-    
+
     public function merchandises()
     {
         return $this->hasMany(Merchandise::class, 'product_id');
     }
-    
-    protected static function validationRules()
+
+    public function createMerchandise(array $attributes)
     {
-        return [self::NAME => 'required'];
+        return $this->merchandises()->save(new Merchandise($attributes));
     }
-    
-    public static function validationRulesOnCreate()
+
+    public function updateMerchandise(array $attributes)
     {
-        return array_merge(self::validationRules(), [self::CODE => 'required|unique:products']);
-    }
-    
-    public static function validationRulesOnUpdate()
-    {
-        return array_merge(self::validationRules(), [Product::CODE => 'required']);
-    }
-    
-    public static function readAttributes(Request $request)
-    {
-        return [
-            self::NAME => $request->get(self::NAME),
-            self::CODE => $request->get(self::CODE),
-            self::DESCRIPTION=> $request->get(self::DESCRIPTION),
-        ];
+        return $this->merchandises()->first()->update($attributes);
     }
 
 }

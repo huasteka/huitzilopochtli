@@ -18,7 +18,6 @@ class CreateMerchandiseTable extends Migration
             $table->integer('product_id')->unsigned();
             $table->decimal('retail_price', 11, 2);
             $table->decimal('purchase_price', 11, 2);
-            $table->boolean('is_active');
             $table->timestamps();
             $table->softDeletes();
 

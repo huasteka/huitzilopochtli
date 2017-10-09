@@ -28,6 +28,7 @@ class CreatePurchaseTable extends Migration
             $table->integer('merchandise_id');
             $table->integer('purchase_id');
             $table->decimal('purchase_price');
+            $table->decimal('quantity');
 
             $table->foreign('merchandise_id')->references('id')->on('merchandises');
             $table->foreign('purchase_id')->references('id')->on('purchases');

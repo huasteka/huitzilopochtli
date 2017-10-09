@@ -2,40 +2,51 @@
 namespace App\Http\Controllers;
 
 use App\Contact;
+use App\Contactable;
+use App\Services\ContactableService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
-abstract class ContactableController extends StandardController
+abstract class ContactableController extends RestController
 {
 
-    const REQUEST_ATTRIBUTE_CONTACTS = 'contacts';
-
-    protected function createContactsFromRequest(Request $request, $toArray = false)
+    public function storeContactHandler(Request $request, ContactableService $service, callable $checkRelationship)
     {
-        $this->validateContactsRequest($request);
-        $contactList = [];
-        foreach ($request->get(self::REQUEST_ATTRIBUTE_CONTACTS) as $contactRequest) {
-            $contactList[] = $this->createContact($contactRequest, $toArray);
+        return $checkRelationship(function (Contactable $contactable) use ($request, $service) {
+            $this->validate($request, $service->getValidationRulesForContact());
+            $service->createContact($request, $contactable);
+            return $this->withStatus(Response::HTTP_CREATED);
+        });
+    }
+
+    public function updateContactHandler(Request $request, ContactableService $service, $contactId, callable $checkRelationship)
+    {
+        return $checkRelationship(function () use ($request, $service, $contactId) {
+            return $this->findContactAndExecuteCallback($contactId, function (Contact $contact) use ($request, $service) {
+                $this->validate($request, $service->getValidationRulesForContact());
+                $service->updateContact($request, $contact);
+                return $this->withStatus(Response::HTTP_NO_CONTENT);
+            });
+        });
+    }
+
+    public function destroyContactHandler(Request $request, $contactId, callable $checkRelationship)
+    {
+        return $checkRelationship(function () use ($request, $contactId) {
+            return $this->findContactAndExecuteCallback($contactId, function (Contact $contact) {
+                $contact->delete();
+                return $this->withStatus(Response::HTTP_NO_CONTENT);
+            });
+        });
+    }
+
+    protected function findContactAndExecuteCallback($contactId, callable $callback)
+    {
+        $contact = Contact::find($contactId);
+        if (is_null($contact)) {
+            return $this->withStatus(Response::HTTP_NOT_FOUND);
         }
-        return $contactList;
-    }
-
-    protected function createContact($requestParams, $toArray)
-    {
-        $contactArray = Contact::readAttributes($requestParams);
-        return ($toArray) ? $contactArray : (new Contact())->fill($contactArray);
-    }
-
-    protected function validateContactsRequest(Request $request)
-    {
-        $this->validate($request, [
-            'contacts.*.' . Contact::PHONE => 'required',
-            'contacts.*.' . Contact::ADDRESS => 'required',
-            'contacts.*.' . Contact::ADDRESS_COMPLEMENT => 'required',
-            'contacts.*.' . Contact::POSTAL_CODE => 'required',
-            'contacts.*.' . Contact::CITY => 'required',
-            'contacts.*.' . Contact::REGION => 'required',
-            'contacts.*.' . Contact::COUNTRY => 'required',
-        ]);
+        return $callback($contact);
     }
 
 }

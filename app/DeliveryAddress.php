@@ -1,10 +1,7 @@
 <?php
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
-
-class DeliveryAddress extends Model
+final class DeliveryAddress extends Contactable
 {
 
     const IS_DEFAULT = 'is_default';
@@ -15,23 +12,21 @@ class DeliveryAddress extends Model
         self::IS_DEFAULT,
     ];
 
-    public function contacts()
+    public function updateContact(Contact $contact)
     {
-        return $this->morphMany(Contact::class, 'contactable');
+        $this->contacts()->first()->update($contact->attributesToArray());
     }
-    
-    public static function readAttributes(Request $request)
+
+    public function isDefault()
     {
-        return [
-            self::IS_DEFAULT => $request->get(self::IS_DEFAULT, false),
-        ];
+        return $this->getAttribute(self::IS_DEFAULT) === true;
     }
 
     protected static function boot()
     {
         parent::boot();
-        static::deleting(function ($deliveryAddress) {
-            $deliveryAddress->contacts()->delete();
+        static::deleting(function ($model) {
+            $model->contacts()->delete();
         });
     }
     

@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 use App\Contact;
 use App\Schemas\ContactSchema;
 use App\Schemas\SupplierSchema;
+use App\Services\SupplierService;
 use App\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class SupplierController extends ContactableController
+final class SupplierController extends ContactableController
 {
+
+    private $supplierService;
 
     public function index()
     {
@@ -18,11 +21,8 @@ class SupplierController extends ContactableController
 
     public function store(Request $request)
     {
-        $this->validateRequest($request, Supplier::validationRulesOnCreate());
-        $supplier = Supplier::create($this->parseRequest($request));
-        if ($request->has(self::REQUEST_ATTRIBUTE_CONTACTS)) {
-            $supplier->contacts = $supplier->contacts()->saveMany($this->createContactsFromRequest($request));
-        }
+        $this->validateRequest($request, $this->getSupplierService()->getValidationRulesOnCreate($request));
+        $supplier = $this->getSupplierService()->store($request);
         return $this->withJsonApi($this->getEncoder()->encodeData($supplier), Response::HTTP_CREATED);
     }
 
@@ -34,9 +34,8 @@ class SupplierController extends ContactableController
     public function update(Request $request, $supplierId)
     {
         return $this->findSupplierAndExecuteCallback($supplierId, function (Supplier $supplier) use ($request) {
-            $this->validateRequest($request, Supplier::validationRulesOnUpdate());
-            $supplier->fill($this->parseRequest($request));
-            $supplier->save();
+            $this->validateRequest($request, $this->getSupplierService()->getValidationRulesOnUpdate($request));
+            $this->getSupplierService()->update($request, $supplier);
             return $this->withStatus(Response::HTTP_NO_CONTENT);
         });
     }
@@ -49,6 +48,33 @@ class SupplierController extends ContactableController
         });
     }
     
+    public function storeContact(Request $request, $supplierId)
+    {
+        return $this->storeContactHandler($request, $this->getSupplierService(), function (callable $createContact) use ($supplierId) {
+            return $this->findSupplierAndExecuteCallback($supplierId, function (Supplier $supplier) use ($createContact) {
+                return $createContact($supplier);
+            });
+        });
+    }
+
+    public function updateContact(Request $request, $supplierId, $contactId)
+    {
+        return $this->updateContactHandler($request, $this->getSupplierService(), $contactId, function (callable $updateContact) use ($supplierId) {
+            return $this->findSupplierAndExecuteCallback($supplierId, function () use ($updateContact) {
+                return $updateContact();
+            });
+        });
+    }
+
+    public function destroyContact(Request $request, $supplierId, $contactId)
+    {
+        return $this->destroyContactHandler($request, $contactId, function (callable $destroyContact) use ($supplierId) {
+            return $this->findSupplierAndExecuteCallback($supplierId, function () use ($destroyContact) {
+                return $destroyContact();
+            });
+        });
+    }
+
     private function findSupplierAndExecuteCallback($supplierId, callable $callback)
     {
         $supplier = Supplier::find($supplierId);
@@ -58,17 +84,20 @@ class SupplierController extends ContactableController
         return $callback($supplier);
     }
 
-    protected function parseRequest(Request $request)
-    {
-        return Supplier::readAttributes($request);
-    }
-
     private function getEncoder()
     {
         return $this->createEncoder([
             Supplier::class => SupplierSchema::class,
             Contact::class => ContactSchema::class,
         ]);
+    }
+
+    private function getSupplierService()
+    {
+        if (is_null($this->supplierService)) {
+            $this->supplierService = new SupplierService();
+        }
+        return $this->supplierService;
     }
 
 }

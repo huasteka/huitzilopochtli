@@ -3,11 +3,14 @@ namespace App\Http\Controllers;
 
 use App\Product;
 use App\Schemas\ProductSchema;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-final class ProductController extends StandardController
+final class ProductController extends RestController
 {
+
+    private $productService;
 
     public function index()
     {
@@ -16,8 +19,8 @@ final class ProductController extends StandardController
 
     public function store(Request $request)
     {
-        $this->validateRequest($request, Product::validationRulesOnCreate());
-        $product = Product::create($this->parseRequest($request));
+        $this->validateRequest($request, $this->getService()->getValidationRulesOnCreate($request));
+        $product = $this->getService()->store($request);
         return $this->withJsonApi($this->getEncoder()->encodeData($product), Response::HTTP_CREATED);
     }
 
@@ -29,9 +32,7 @@ final class ProductController extends StandardController
     public function update(Request $request, $productId)
     {
         return $this->findProductAndExecuteCallback($productId, function (Product $product) use ($request) {
-            $this->validateRequest($request, Product::validationRulesOnUpdate());
-            $product->fill($this->parseRequest($request));
-            $product->save();
+            $this->getService()->update($request, $product);
             return $this->withStatus(Response::HTTP_NO_CONTENT);
         });
     }
@@ -53,14 +54,17 @@ final class ProductController extends StandardController
         return $callback($product);
     }
 
-    protected function parseRequest(Request $request)
-    {
-        return Product::readAttributes($request);
-    }
-
     private function getEncoder()
     {
         return $this->createEncoder([Product::class => ProductSchema::class]);
+    }
+
+    private function getService()
+    {
+        if (is_null($this->productService)) {
+            $this->productService = new ProductService();
+        }
+        return $this->productService;
     }
 
 }

@@ -3,15 +3,17 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class MerchandisePurchase extends Pivot
+final class MerchandisePurchase extends Pivot
 {
 
+    const QUANTITY = 'quantity';
     const PURCHASE_VALUE = 'purchase_value';
 
     const RELATIONSHIP_MERCHANDISE = 'merchandise';
     const RELATIONSHIP_PURCHASE = 'purchase';
 
     protected $fillable = [
+        self::QUANTITY,
         self::PURCHASE_VALUE,
     ];
 

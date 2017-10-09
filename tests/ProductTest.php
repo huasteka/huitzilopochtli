@@ -45,19 +45,39 @@ class ProductTest extends TestCase
         $productArray = $this->convertObjectToArray($product);
         $this->json('POST', '/api/products', $productArray)
             ->seeStatusCode(Illuminate\Http\Response::HTTP_CREATED)
-            ->seeJson([App\Product::NAME => $product->getAttribute(App\Product::NAME)])
-            ->seeJson([App\Product::CODE => $product->getAttribute(App\Product::CODE)])
-            ->seeJson([App\Product::DESCRIPTION => $product->getAttribute(App\Product::DESCRIPTION)]);
+            ->seeJson([App\Product::NAME => $productArray[App\Product::NAME]])
+            ->seeJson([App\Product::CODE => $productArray[App\Product::CODE]])
+            ->seeJson([App\Product::DESCRIPTION => $productArray[App\Product::DESCRIPTION]]);
+    }
+
+    public function testShouldCreateProductWithMerchandiseRequest()
+    {
+        $product = factory(App\Product::class)->make();
+        $productArray = $this->convertObjectToArray($product);
+        $productArray['merchandise'] = $this->convertObjectToArray(factory(App\Merchandise::class)->make());
+        $this->json('POST', '/api/products', $productArray)
+            ->seeStatusCode(Illuminate\Http\Response::HTTP_CREATED)
+            ->seeJson([App\Product::NAME => $productArray[App\Product::NAME]])
+            ->seeJson([App\Product::CODE => $productArray[App\Product::CODE]])
+            ->seeJson([App\Product::DESCRIPTION => $productArray[App\Product::DESCRIPTION]])
+            ->seeInDatabase('merchandises', [
+                App\Merchandise::PURCHASE_PRICE => $productArray['merchandise'][App\Merchandise::PURCHASE_PRICE],
+                App\Merchandise::RETAIL_PRICE => $productArray['merchandise'][App\Merchandise::RETAIL_PRICE],
+            ]);
     }
 
     public function testShouldUpdateProductRequest()
     {
+        $updatedName = 'This is an updated field';
         $product = factory(App\Product::class)->create();
-        $product->setAttribute(App\Product::NAME, 'This is an updated field');
+        $product->setAttribute(App\Product::NAME, $updatedName);
         $productArray = $this->convertObjectToArray($product);
         $this->json('PUT', "/api/products/{$product->getKey()}", $productArray)
             ->seeStatusCode(Illuminate\Http\Response::HTTP_NO_CONTENT)
-            ->seeInDatabase('products', $productArray);
+            ->seeInDatabase('products', [
+                'id' => $product->getKey(),
+                App\Product::NAME => $updatedName
+            ]);
     }
 
     public function testShouldDestroyProductRequest()

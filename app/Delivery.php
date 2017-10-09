@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 
-class Delivery extends Model
+final class Delivery extends Model
 {
 
     use SoftDeletes;
@@ -27,13 +27,9 @@ class Delivery extends Model
         return $this->hasOne(DeliveryAddress::class, 'delivery_address_id');
     }
 
-    public static function readAttributes(Request $request)
+    public function createAddress(DeliveryAddress $deliveryAddress)
     {
-        return [
-            self::SENT_AT => $request->get(self::SENT_AT),
-            self::ARRIVED_AT => $request->get(self::ARRIVED_AT),
-            self::DELIVERY_TIME => $request->get(self::DELIVERY_TIME),
-        ];
+        $this->address()->save($deliveryAddress);
     }
     
 }

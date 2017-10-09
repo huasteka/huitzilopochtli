@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\JsonResponseFormatter;
+use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use Neomerx\JsonApi\Contracts\Encoder\EncoderInterface;
 use Neomerx\JsonApi\Encoder\Encoder;
@@ -10,16 +11,6 @@ use Neomerx\JsonApi\Encoder\EncoderOptions;
 
 abstract class RestController extends BaseController
 {
-
-    protected function withJson(JsonResponseFormatter $jsonResponse, $status = 200)
-    {
-        return response()->json($jsonResponse->toArray(), $status);
-    }
-
-    protected function withStatus($status)
-    {
-        return response()->json([], $status);
-    }
 
     /**
      * @param array $schemas
@@ -31,9 +22,24 @@ abstract class RestController extends BaseController
         return Encoder::instance($schemas, $encoderOptions);
     }
 
+    protected function withJson(JsonResponseFormatter $jsonResponse, $status = 200)
+    {
+        return response()->json($jsonResponse->toArray(), $status);
+    }
+
+    protected function withStatus($status)
+    {
+        return response()->json([], $status);
+    }
+
     protected function withJsonApi($json, $status = 200)
     {
         return response($json, $status, ['Content-Type' => 'application/json']);
+    }
+
+    protected function validateRequest(Request $request, array $validationRules, array $newRules = [])
+    {
+        $this->validate($request, array_merge($validationRules, $newRules));
     }
 
 }

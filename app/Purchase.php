@@ -3,9 +3,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Http\Request;
 
-class Purchase extends Model
+final class Purchase extends Model
 {
 
     use SoftDeletes;
@@ -37,15 +36,17 @@ class Purchase extends Model
         return $this->hasOne(Delivery::class, 'purchase_id');
     }
 
-    public static function readAttributes(Request $request)
+    public function createMerchandise($merchandiseId, $quantity, $purchaseValue = 0.00)
     {
-        return [
-            self::CODE => $request->get(self::CODE),
-            self::DESCRIPTION => $request->get(self::DESCRIPTION),
-            self::GROSS_VALUE => $request->get(self::GROSS_VALUE),
-            self::NET_VALUE => $request->get(self::NET_VALUE),
-            self::DISCOUNT => $request->get(self::DISCOUNT),
-        ];
+        $this->merchandises()->attach($merchandiseId, [
+            MerchandisePurchase::QUANTITY => $quantity,
+            MerchandisePurchase::PURCHASE_VALUE => $purchaseValue,
+        ]);
+    }
+    
+    public function createDelivery(Delivery $delivery)
+    {
+        $this->delivery()->save($delivery);
     }
 
 }

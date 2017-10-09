@@ -32,17 +32,4 @@ final class Contact extends Model
         self::CONTACTABLE_TYPE,
     ];
 
-    public static function readAttributes($requestAttributes)
-    {
-        return [
-            self::PHONE => $requestAttributes[self::PHONE],
-            self::ADDRESS => $requestAttributes[self::ADDRESS],
-            self::ADDRESS_COMPLEMENT => $requestAttributes[self::ADDRESS_COMPLEMENT],
-            self::POSTAL_CODE => $requestAttributes[self::POSTAL_CODE],
-            self::CITY => $requestAttributes[self::CITY],
-            self::REGION => $requestAttributes[self::REGION],
-            self::COUNTRY => $requestAttributes[self::COUNTRY],
-        ];
-    }
-
 }

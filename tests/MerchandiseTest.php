@@ -25,6 +25,15 @@ class MerchandiseTest extends TestCase
                         'attributes' => [
                             App\Merchandise::PURCHASE_PRICE,
                             App\Merchandise::RETAIL_PRICE,
+                        ],
+                    ]
+                ],
+                'included' => [
+                    '*' => [
+                        'attributes' => [
+                            App\Product::NAME,
+                            App\Product::CODE,
+                            App\Product::DESCRIPTION,
                         ]
                     ]
                 ]
@@ -59,15 +68,15 @@ class MerchandiseTest extends TestCase
     {
         $merchandise = factory(App\Merchandise::class)->make();
         $merchandiseArray = $this->convertObjectToArray($merchandise);
-        $product = factory(App\Product::class)->make();
-        $merchandiseArray['product'] = $this->convertObjectToArray($product);
+        $productArray = $this->convertObjectToArray(factory(App\Product::class)->make());
+        $merchandiseArray['product'] = $productArray;
         $this->json('POST', '/api/merchandises', $merchandiseArray)
             ->seeStatusCode(Illuminate\Http\Response::HTTP_CREATED)
             ->seeJson([App\Merchandise::PURCHASE_PRICE => $merchandise->getAttribute(App\Merchandise::PURCHASE_PRICE)])
             ->seeJson([App\Merchandise::RETAIL_PRICE => $merchandise->getAttribute(App\Merchandise::RETAIL_PRICE)])
-            ->seeJson([App\Product::NAME => $product->getAttribute(App\Product::NAME)])
-            ->seeJson([App\Product::CODE => $product->getAttribute(App\Product::CODE)])
-            ->seeJson([App\Product::DESCRIPTION => $product->getAttribute(App\Product::DESCRIPTION)]);
+            ->seeJson([App\Product::NAME => $productArray[App\Product::NAME]])
+            ->seeJson([App\Product::CODE => $productArray[App\Product::CODE]])
+            ->seeJson([App\Product::DESCRIPTION => $productArray[App\Product::DESCRIPTION]]);
     }
 
     public function testShouldUpdateMerchandiseRequest()
