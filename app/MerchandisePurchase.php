@@ -7,14 +7,14 @@ final class MerchandisePurchase extends Pivot
 {
 
     const QUANTITY = 'quantity';
-    const PURCHASE_VALUE = 'purchase_value';
+    const PURCHASE_PRICE = 'purchase_price';
 
     const RELATIONSHIP_MERCHANDISE = 'merchandise';
     const RELATIONSHIP_PURCHASE = 'purchase';
 
     protected $fillable = [
         self::QUANTITY,
-        self::PURCHASE_VALUE,
+        self::PURCHASE_PRICE,
     ];
 
     public function merchandise()

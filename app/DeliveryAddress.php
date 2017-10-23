@@ -11,6 +11,11 @@ final class DeliveryAddress extends Contactable
     protected $fillable = [
         self::IS_DEFAULT,
     ];
+    
+    public function deliveries()
+    {
+        return $this->hasMany(Delivery::class, 'delivery_address_id');
+    }
 
     public function updateContact(Contact $contact)
     {

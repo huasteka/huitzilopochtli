@@ -20,6 +20,8 @@ class CreateDeliveryTable extends Migration
             $table->timestamp('sent_at')->nullable();
             $table->timestamp('arrived_at')->nullable();
             $table->integer('delivery_time')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('purchase_id')->references('id')->on('purchases');
             $table->foreign('delivery_address_id')->references('id')->on('delivery_addresses');

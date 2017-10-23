@@ -23,7 +23,6 @@ $factory->define(App\Product::class, function (Faker\Generator $faker) {
         App\Product::NAME => $faker->name,
         App\Product::CODE => $faker->md5,
         App\Product::DESCRIPTION => $faker->paragraph(10),
-
     ];
 });
 
@@ -61,16 +60,6 @@ $factory->define(App\Contact::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Purchase::class, function (Faker\Generator $faker) {
-    return [
-        App\Purchase::CODE => $faker->md5,
-        App\Purchase::DESCRIPTION => $faker->paragraph(5),
-        App\Purchase::GROSS_VALUE => sprintf('%.2f', $faker->randomFloat(2)),
-        App\Purchase::NET_VALUE => sprintf('%.2f', $faker->randomFloat(2)),
-        App\Purchase::DISCOUNT => sprintf('%.2f', $faker->randomFloat(2)),
-    ];
-});
-
 $factory->define(App\DeliveryAddress::class, function (Faker\Generator $faker) {
     return [
         App\DeliveryAddress::IS_DEFAULT => $faker->boolean,
@@ -78,11 +67,22 @@ $factory->define(App\DeliveryAddress::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Delivery::class, function (Faker\Generator $faker) {
-    $dateTime = $faker->dateTime;
     $deliveryTime = $faker->numberBetween(1, 30);
+    $sentAt = $faker->dateTime;
+    $arrivedAt = $sentAt->add(new \DateInterval("P{$deliveryTime}D"));
     return [
-        App\Delivery::SENT_AT => $dateTime,
-        App\Delivery::ARRIVED_AT => $dateTime->add(new \DateInterval("P{$deliveryTime}D")),
+        App\Delivery::SENT_AT => $sentAt->format('Y-m-d H:m:i'),
+        App\Delivery::ARRIVED_AT => $arrivedAt->format('Y-m-d H:m:i'),
         App\Delivery::DELIVERY_TIME => $deliveryTime,
+    ];
+});
+
+$factory->define(App\Purchase::class, function (Faker\Generator $faker) {
+    return [
+        App\Purchase::CODE => $faker->md5,
+        App\Purchase::DESCRIPTION => $faker->paragraph(5),
+        App\Purchase::GROSS_VALUE => sprintf('%.2f', $faker->randomFloat(2)),
+        App\Purchase::NET_VALUE => sprintf('%.2f', $faker->randomFloat(2)),
+        App\Purchase::DISCOUNT => sprintf('%.2f', $faker->randomFloat(2)),
     ];
 });

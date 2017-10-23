@@ -27,8 +27,7 @@ class PurchaseService extends AbstractService
     {
         if ($request->has('merchandises')) {
             foreach ($request->get('merchandises') as $merchandise) {
-                $merchandises_ids[] = $merchandise['id'];
-                $purchase->createMerchandise($merchandise['id'], $merchandise[MerchandisePurchase::QUANTITY], $merchandise[MerchandisePurchase::PURCHASE_VALUE]);
+                $purchase->createMerchandise($merchandise['id'], $merchandise[MerchandisePurchase::QUANTITY], $merchandise[MerchandisePurchase::PURCHASE_PRICE]);
             }
         }
     }
@@ -47,11 +46,20 @@ class PurchaseService extends AbstractService
                     $deliveryAddress->createContactByAttributes($deliveryRequest['contact']);
                 }
             }
-            $delivery->createAddress($deliveryAddress);
-            $purchase->createDelivery($delivery);
+            if (!is_null($deliveryAddress)) {
+                $delivery->setAttribute('delivery_address_id', $deliveryAddress->getKey());
+                $purchase->createDelivery($delivery);
+            }
         }
     }
-    
+
+    /**
+     * TODO Purchased merchandise and delivery information can be updated
+     * 
+     * @param Request $request
+     * @param Purchase $purchase
+     * @return null
+     */
     public function update(Request $request, Purchase $purchase)
     {
         return null;
@@ -71,27 +79,28 @@ class PurchaseService extends AbstractService
     private function readAttributesForDelivery(Request $request)
     {
         return [
-            Delivery::SENT_AT => $request->input(Purchase::RELATIONSHIP_DELIVERY, Delivery::SENT_AT),
-            Delivery::DELIVERY_TIME => $request->input(Purchase::RELATIONSHIP_DELIVERY, Delivery::DELIVERY_TIME),
-            Delivery::ARRIVED_AT => $request->input(Purchase::RELATIONSHIP_DELIVERY, Delivery::ARRIVED_AT),
+            Delivery::SENT_AT => $request->input($this->property(Purchase::RELATIONSHIP_DELIVERY, Delivery::SENT_AT)),
+            Delivery::DELIVERY_TIME => $request->input($this->property(Purchase::RELATIONSHIP_DELIVERY, Delivery::DELIVERY_TIME)),
+            Delivery::ARRIVED_AT => $request->input($this->property(Purchase::RELATIONSHIP_DELIVERY, Delivery::ARRIVED_AT)),
         ];
     }
 
     private function readAttributesForDeliveryAddress(Request $request)
     {
-
-        $contactArray = $request->input($this->property('delivery', 'delivery_address', 'contacts'));
-        $contactArray = array_pop($contactArray);
+        $contactList = $request->input($this->property('delivery', 'delivery_address', 'contacts'));
+        $contactArray = array_pop($contactList);
         return [
-            'delivery_address' => [DeliveryAddress::IS_DEFAULT => $request->input('')],
+            'delivery_address' => [
+                DeliveryAddress::IS_DEFAULT => $request->input($this->property('delivery', 'delivery_address', DeliveryAddress::IS_DEFAULT))
+            ],
             'contact' => [
-                $contactArray[Contact::PHONE] => 'required',
-                $contactArray[Contact::ADDRESS] => 'required',
-                $contactArray[Contact::ADDRESS_COMPLEMENT] => 'required',
-                $contactArray[Contact::POSTAL_CODE] => 'required',
-                $contactArray[Contact::CITY] => 'required',
-                $contactArray[Contact::REGION] => 'required',
-                $contactArray[Contact::COUNTRY] => 'required',
+                Contact::PHONE => $contactArray[Contact::PHONE],
+                Contact::ADDRESS => $contactArray[Contact::ADDRESS],
+                Contact::ADDRESS_COMPLEMENT => $contactArray[Contact::ADDRESS_COMPLEMENT],
+                Contact::POSTAL_CODE => $contactArray[Contact::POSTAL_CODE],
+                Contact::CITY => $contactArray[Contact::CITY],
+                Contact::REGION => $contactArray[Contact::REGION],
+                Contact::COUNTRY => $contactArray[Contact::COUNTRY],
             ]
         ];
     }
@@ -128,7 +137,7 @@ class PurchaseService extends AbstractService
             $rules = array_merge($rules, [
                 $this->merchandiseProperty('id') => 'required|exists:merchandises,id',
                 $this->merchandiseProperty(MerchandisePurchase::QUANTITY) => 'required|min:1',
-                $this->merchandiseProperty(MerchandisePurchase::PURCHASE_VALUE) => 'required|min:0',
+                $this->merchandiseProperty(MerchandisePurchase::PURCHASE_PRICE) => 'required|min:0',
             ]);
         }
         return $rules;
@@ -144,7 +153,7 @@ class PurchaseService extends AbstractService
         $rules = [];
         if ($request->has('delivery')) {
             $rules = [
-                $this->property(Purchase::RELATIONSHIP_DELIVERY, Delivery::SENT_AT) => 'sometimes|required|date|after:today',
+                $this->property(Purchase::RELATIONSHIP_DELIVERY, Delivery::SENT_AT) => 'sometimes|required|date',
                 $this->property(Purchase::RELATIONSHIP_DELIVERY, Delivery::DELIVERY_TIME) => 'sometimes|required|min:1',
                 $this->property(Purchase::RELATIONSHIP_DELIVERY, Delivery::ARRIVED_AT) => 'sometimes|required|date|after:sent_at',
             ];
@@ -154,7 +163,7 @@ class PurchaseService extends AbstractService
                 ]);
             } else if ($request->has('delivery.delivery_address')) {
                 $rules = array_merge($rules, [
-                    $this->property(Purchase::RELATIONSHIP_DELIVERY, Delivery::RELATIONSHIP_DELIVERY_ADDRESS, DeliveryAddress::IS_DEFAULT) => 'required|boolean',
+                    $this->property(Purchase::RELATIONSHIP_DELIVERY, 'delivery_address', DeliveryAddress::IS_DEFAULT) => 'required|boolean',
                     $this->deliveryAddressProperty(Contact::PHONE) => 'required',
                     $this->deliveryAddressProperty(Contact::ADDRESS) => 'required',
                     $this->deliveryAddressProperty(Contact::ADDRESS_COMPLEMENT) => 'required',

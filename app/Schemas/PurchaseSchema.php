@@ -64,7 +64,11 @@ class PurchaseSchema extends SchemaProvider
 
     public function getIncludePaths()
     {
-        return [Purchase::RELATIONSHIP_DELIVERY, Purchase::RELATIONSHIP_MERCHANDISES];
+        return [
+            Purchase::RELATIONSHIP_DELIVERY, 
+            Purchase::RELATIONSHIP_MERCHANDISES,
+            Purchase::RELATIONSHIP_MERCHANDISES . '.' . Merchandise::RELATIONSHIP_PRODUCT
+        ];
     }
     
 }

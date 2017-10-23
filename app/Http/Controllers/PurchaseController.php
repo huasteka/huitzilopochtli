@@ -3,9 +3,11 @@ namespace App\Http\Controllers;
 
 use App\Delivery;
 use App\Merchandise;
+use App\Product;
 use App\Purchase;
 use App\Schemas\DeliverySchema;
 use App\Schemas\MerchandiseSchema;
+use App\Schemas\ProductSchema;
 use App\Schemas\PurchaseSchema;
 use App\Services\PurchaseService;
 use Illuminate\Http\Request;
@@ -15,6 +17,11 @@ class PurchaseController extends RestController
 {
 
     private $purchaseService;
+    
+    public function __construct()
+    {
+        $this->purchaseService = new PurchaseService();
+    }
 
     public function index()
     {
@@ -36,8 +43,9 @@ class PurchaseController extends RestController
     public function update(Request $request, $purchaseId)
     {
         return $this->findPurchaseAndExecuteCallback($purchaseId, function (Purchase $purchase) use ($request) {
+            $this->validate($request, $this->getPurchaseService()->getValidationRulesOnUpdate($request));
             $this->getPurchaseService()->update($request, $purchase);
-            return $this->withStatus(Response::HTTP_NO_CONTENT);
+            return $this->withStatus(Response::HTTP_NOT_IMPLEMENTED);
         });
     }
 
@@ -45,6 +53,7 @@ class PurchaseController extends RestController
     {
         return $this->findPurchaseAndExecuteCallback($purchaseId, function (Purchase $purchase) {
             $purchase->delete();
+            return $this->withStatus(Response::HTTP_NO_CONTENT);
         });
     }
 
@@ -62,15 +71,13 @@ class PurchaseController extends RestController
         return $this->createEncoder([
             Purchase::class => PurchaseSchema::class,
             Merchandise::class => MerchandiseSchema::class,
-            Delivery::class => DeliverySchema::class
+            Product::class => ProductSchema::class,
+            Delivery::class => DeliverySchema::class,
         ]);
     }
 
     private function getPurchaseService()
     {
-        if (is_null($this->purchaseService)) {
-            $this->purchaseService = new PurchaseService();
-        }
         return $this->purchaseService;
     }
 

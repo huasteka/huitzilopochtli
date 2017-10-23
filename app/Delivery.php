@@ -3,7 +3,6 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Http\Request;
 
 final class Delivery extends Model
 {
@@ -24,12 +23,12 @@ final class Delivery extends Model
     
     public function address()
     {
-        return $this->hasOne(DeliveryAddress::class, 'delivery_address_id');
+        return $this->belongsTo(DeliveryAddress::class);
     }
 
     public function createAddress(DeliveryAddress $deliveryAddress)
     {
-        $this->address()->save($deliveryAddress);
+        $this->address()->associate($deliveryAddress);
     }
     
 }

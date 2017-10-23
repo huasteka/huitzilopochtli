@@ -44,4 +44,5 @@ $app->group(['prefix' => 'api'], function () use ($app) {
     $createRestResource($app, 'ClientController', 'clients', 'clientId');
     $createRestResource($app, 'MerchandiseController', 'merchandises', 'merchandiseId');
     $createRestResource($app, 'DeliveryAddressController', 'delivery_addresses', 'deliveryAddressId');
+    $createRestResource($app, 'PurchaseController', 'purchases', 'purchaseId');
 });

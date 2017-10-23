@@ -7,6 +7,8 @@ use Neomerx\JsonApi\Schema\SchemaProvider;
 class DeliverySchema extends SchemaProvider
 {
 
+    protected $resourceType = 'deliveries';
+
     /**
      * Get resource identity.
      *

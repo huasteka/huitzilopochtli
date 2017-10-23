@@ -19,7 +19,7 @@ class CreatePurchaseTable extends Migration
             $table->text('description')->nullable();
             $table->decimal('gross_value', 12);
             $table->decimal('net_value', 12);
-            $table->decimal('discount');
+            $table->decimal('discount', 12);
             $table->timestamps();
             $table->softDeletes();
         });

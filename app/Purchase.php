@@ -36,11 +36,11 @@ final class Purchase extends Model
         return $this->hasOne(Delivery::class, 'purchase_id');
     }
 
-    public function createMerchandise($merchandiseId, $quantity, $purchaseValue = 0.00)
+    public function createMerchandise($merchandiseId, $quantity, $purchasePrice = 0.00)
     {
         $this->merchandises()->attach($merchandiseId, [
             MerchandisePurchase::QUANTITY => $quantity,
-            MerchandisePurchase::PURCHASE_VALUE => $purchaseValue,
+            MerchandisePurchase::PURCHASE_PRICE => $purchasePrice,
         ]);
     }
     
