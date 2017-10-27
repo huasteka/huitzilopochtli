@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Delivery;
@@ -9,7 +10,7 @@ use App\Schemas\DeliverySchema;
 use App\Schemas\MerchandiseSchema;
 use App\Schemas\ProductSchema;
 use App\Schemas\PurchaseSchema;
-use App\Services\PurchaseService;
+use App\Services\Purchase\PurchaseService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -17,10 +18,10 @@ class PurchaseController extends RestController
 {
 
     private $purchaseService;
-    
-    public function __construct()
+
+    public function __construct(PurchaseService $purchaseService)
     {
-        $this->purchaseService = new PurchaseService();
+        $this->purchaseService = $purchaseService;
     }
 
     public function index()
@@ -30,8 +31,8 @@ class PurchaseController extends RestController
 
     public function store(Request $request)
     {
-        $this->validate($request, $this->getPurchaseService()->getValidationRulesOnCreate($request));
-        $purchase = $this->getPurchaseService()->store($request);
+        $this->validate($request, $this->getPurchaseService()->validateOnCreate($request));
+        $purchase = $this->getPurchaseService()->create($request);
         return $this->withJsonApi($this->getEncoder()->encodeData($purchase), Response::HTTP_CREATED);
     }
 
@@ -43,7 +44,7 @@ class PurchaseController extends RestController
     public function update(Request $request, $purchaseId)
     {
         return $this->findPurchaseAndExecuteCallback($purchaseId, function (Purchase $purchase) use ($request) {
-            $this->validate($request, $this->getPurchaseService()->getValidationRulesOnUpdate($request));
+            $this->validate($request, $this->getPurchaseService()->validateOnUpdate($request));
             $this->getPurchaseService()->update($request, $purchase);
             return $this->withStatus(Response::HTTP_NOT_IMPLEMENTED);
         });

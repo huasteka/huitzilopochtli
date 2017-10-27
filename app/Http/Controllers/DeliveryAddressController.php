@@ -5,7 +5,7 @@ use App\Contact;
 use App\DeliveryAddress;
 use App\Schemas\ContactSchema;
 use App\Schemas\DeliveryAddressSchema;
-use App\Services\DeliveryAddressService;
+use App\Services\DeliveryAddress\DeliveryAddressService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +15,12 @@ class DeliveryAddressController extends ContactableController
     
     private $deliveryAddressService;
 
+    public function __construct(DeliveryAddressService $deliveryAddressService)
+    {
+        $this->deliveryAddressService = $deliveryAddressService;
+    }
+
+
     public function index()
     {
         return $this->withJsonApi($this->getEncoder()->encodeData(DeliveryAddress::all()));
@@ -22,8 +28,8 @@ class DeliveryAddressController extends ContactableController
 
     public function store(Request $request)
     {
-        $this->validate($request, $this->getDeliveryAddressService()->getValidationRulesOnCreateAndUpdate($request));
-        $deliveryAddress = $this->getDeliveryAddressService()->store($request);
+        $this->validate($request, $this->getDeliveryAddressService()->validateOnCreate($request));
+        $deliveryAddress = $this->getDeliveryAddressService()->create($request);
         return $this->withJsonApi($this->getEncoder()->encodeData($deliveryAddress), Response::HTTP_CREATED);
     }
 
@@ -35,6 +41,7 @@ class DeliveryAddressController extends ContactableController
     public function update(Request $request, $deliveryAddressId)
     {
         return $this->findDeliveryAddressAndExecuteCallback($deliveryAddressId, function (DeliveryAddress $deliveryAddress) use ($request) {
+            $this->validateRequest($request, $this->getDeliveryAddressService()->validateOnUpdate($request));
             $this->getDeliveryAddressService()->update($request, $deliveryAddress);
             return $this->withStatus(Response::HTTP_NO_CONTENT);
         });
@@ -69,9 +76,6 @@ class DeliveryAddressController extends ContactableController
 
     public function getDeliveryAddressService()
     {
-        if (is_null($this->deliveryAddressService)) {
-            $this->deliveryAddressService = new DeliveryAddressService();
-        }
         return $this->deliveryAddressService;
     }
     

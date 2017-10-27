@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Contact;
 use App\Schemas\ContactSchema;
 use App\Schemas\SupplierSchema;
-use App\Services\SupplierService;
+use App\Services\Supplier\SupplierService;
 use App\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -13,6 +13,11 @@ final class SupplierController extends ContactableController
 {
 
     private $supplierService;
+    
+    public function __construct(SupplierService $supplierService)
+    {
+        $this->supplierService = $supplierService;
+    }
 
     public function index()
     {
@@ -21,8 +26,8 @@ final class SupplierController extends ContactableController
 
     public function store(Request $request)
     {
-        $this->validateRequest($request, $this->getSupplierService()->getValidationRulesOnCreate($request));
-        $supplier = $this->getSupplierService()->store($request);
+        $this->validateRequest($request, $this->getSupplierService()->validateOnCreate($request));
+        $supplier = $this->getSupplierService()->create($request);
         return $this->withJsonApi($this->getEncoder()->encodeData($supplier), Response::HTTP_CREATED);
     }
 
@@ -34,7 +39,7 @@ final class SupplierController extends ContactableController
     public function update(Request $request, $supplierId)
     {
         return $this->findSupplierAndExecuteCallback($supplierId, function (Supplier $supplier) use ($request) {
-            $this->validateRequest($request, $this->getSupplierService()->getValidationRulesOnUpdate($request));
+            $this->validateRequest($request, $this->getSupplierService()->validateOnUpdate($request));
             $this->getSupplierService()->update($request, $supplier);
             return $this->withStatus(Response::HTTP_NO_CONTENT);
         });
@@ -94,9 +99,6 @@ final class SupplierController extends ContactableController
 
     private function getSupplierService()
     {
-        if (is_null($this->supplierService)) {
-            $this->supplierService = new SupplierService();
-        }
         return $this->supplierService;
     }
 

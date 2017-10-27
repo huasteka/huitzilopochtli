@@ -5,7 +5,7 @@ use App\Client;
 use App\Contact;
 use App\Schemas\ClientSchema;
 use App\Schemas\ContactSchema;
-use App\Services\ClientService;
+use App\Services\Client\ClientService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -14,6 +14,11 @@ class ClientController extends ContactableController
 
     private $clientService;
 
+    public function __construct(ClientService $clientService)
+    {
+        $this->clientService = $clientService;
+    }
+
     public function index()
     {
         return $this->withJsonApi($this->getEncoder()->encodeData(Client::all()));
@@ -21,8 +26,8 @@ class ClientController extends ContactableController
 
     public function store(Request $request)
     {
-        $this->validateRequest($request, $this->getClientService()->getValidationRulesOnCreate($request));
-        $client = $this->getClientService()->store($request);
+        $this->validateRequest($request, $this->getClientService()->validateOnCreate($request));
+        $client = $this->getClientService()->create($request);
         return $this->withJsonApi($this->getEncoder()->encodeData($client), Response::HTTP_CREATED);
     }
 
@@ -34,7 +39,7 @@ class ClientController extends ContactableController
     public function update(Request $request, $clientId)
     {
         return $this->findClientAndExecuteCallback($clientId, function (Client $client) use ($request) {
-            $this->validateRequest($request, $this->getClientService()->getValidationRulesOnUpdate($request));
+            $this->validateRequest($request, $this->getClientService()->validateOnUpdate($request));
             $this->getClientService()->update($request, $client);
             return $this->withStatus(Response::HTTP_NO_CONTENT);
         });
@@ -94,9 +99,6 @@ class ClientController extends ContactableController
 
     private function getClientService()
     {
-        if (is_null($this->clientService)) {
-            $this->clientService = new ClientService();
-        }
         return $this->clientService;
     }
 

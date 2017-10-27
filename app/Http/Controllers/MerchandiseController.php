@@ -5,7 +5,7 @@ use App\Merchandise;
 use App\Product;
 use App\Schemas\MerchandiseSchema;
 use App\Schemas\ProductSchema;
-use App\Services\MerchandiseService;
+use App\Services\Merchandise\MerchandiseService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -14,6 +14,11 @@ class MerchandiseController extends RestController
     
     private $merchandiseService;
 
+    public function __construct(MerchandiseService $merchandiseService)
+    {
+        $this->merchandiseService = $merchandiseService;
+    }
+
     public function index()
     {
         return $this->withJsonApi($this->getEncoder()->encodeData(Merchandise::all()));
@@ -21,8 +26,8 @@ class MerchandiseController extends RestController
 
     public function store(Request $request)
     {
-        $this->validate($request, $this->getMerchandiseService()->getValidationRulesOnCreate($request));
-        $merchandise = $this->getMerchandiseService()->store($request);
+        $this->validate($request, $this->getMerchandiseService()->validateOnCreate($request));
+        $merchandise = $this->getMerchandiseService()->create($request);
         return $this->withJsonApi($this->getEncoder()->encodeData($merchandise), Response::HTTP_CREATED);
     }
 
@@ -34,7 +39,7 @@ class MerchandiseController extends RestController
     public function update(Request $request, $merchandiseId)
     {
         return $this->findMerchandiseAndExecuteCallback($merchandiseId, function (Merchandise $merchandise) use ($request) {
-            $this->validate($request, $this->getMerchandiseService()->getValidationRulesOnUpdate($request));
+            $this->validate($request, $this->getMerchandiseService()->validateOnUpdate($request));
             $this->getMerchandiseService()->update($request, $merchandise);
             return $this->withStatus(Response::HTTP_NO_CONTENT);
         });
@@ -67,9 +72,6 @@ class MerchandiseController extends RestController
 
     private function getMerchandiseService()
     {
-        if (is_null($this->merchandiseService)) {
-            $this->merchandiseService = new MerchandiseService();
-        }
         return $this->merchandiseService;
     }
 
