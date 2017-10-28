@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class ProductRequestReader extends AbstractRequestReader
 {
 
-    use ProductAttributeBuilder;
+    use ProductPropertyBuilder;
 
     public function readAttributes(Request $request, $type)
     {

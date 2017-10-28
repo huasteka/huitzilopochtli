@@ -97,4 +97,37 @@ class SupplierTest extends TestCase
             ->seeInDatabase('suppliers', $supplierArray);
     }
 
+    public function testShouldCreateContactOnSupplier()
+    {
+        $supplier = factory(App\Supplier::class)->create();
+        $contact = factory(App\Contact::class)->make();
+        $contactArray = $this->convertObjectToArray($contact);
+        $this->json('POST', "/api/suppliers/{$supplier->getKey()}/contacts", $contactArray)
+            ->seeStatusCode(Illuminate\Http\Response::HTTP_CREATED)
+            ->seeInDatabase('contacts', $contactArray);
+    }
+
+    public function testShouldUpdateContactOnSupplier()
+    {
+        $contact = factory(App\Contact::class)->make();
+        $supplier = factory(App\Supplier::class)->create();
+        $contactId = $supplier->contacts()->save($contact)->getKey();
+        $updatedCityName = 'Gothan Test City';
+        $contactArray = $this->convertObjectToArray($contact);
+        $contactArray[App\Contact::CITY] = $updatedCityName;
+        $this->json('PUT', "/api/suppliers/{$supplier->getKey()}/contacts/{$contactId}", $contactArray)
+            ->seeStatusCode(Illuminate\Http\Response::HTTP_NO_CONTENT)
+            ->seeInDatabase('contacts', [App\Contact::CITY => $updatedCityName]);
+    }
+
+    public function testShouldDeleteContactOnSupplier()
+    {
+        $contact = factory(App\Contact::class)->make();
+        $supplier = factory(App\Supplier::class)->create();
+        $contactId = $supplier->contacts()->save($contact)->getKey();
+        $this->json('DELETE', "/api/suppliers/{$supplier->getKey()}/contacts/{$contactId}")
+            ->seeStatusCode(Illuminate\Http\Response::HTTP_NO_CONTENT)
+            ->notSeeInDatabase('contacts', ['id' => $contactId]);
+    }
+
 }

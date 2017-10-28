@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-trait AttributeBuilder
+trait PropertyBuilder
 {
 
     protected static $requestAttributeId = 'id';

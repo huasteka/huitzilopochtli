@@ -2,12 +2,12 @@
 
 namespace App\Services\Product;
 
-use App\Services\AttributeBuilder;
+use App\Services\PropertyBuilder;
 
-trait ProductAttributeBuilder
+trait ProductPropertyBuilder
 {
 
-    use AttributeBuilder;
+    use PropertyBuilder;
 
     protected static $requestAttributeMerchandise = 'merchandise';
 

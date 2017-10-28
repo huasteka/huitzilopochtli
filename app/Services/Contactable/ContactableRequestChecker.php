@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 trait ContactableRequestChecker
 {
 
-    use ContactableAttributeBuilder;
+    use ContactablePropertyBuilder;
 
     protected function hasContacts(Request $request)
     {

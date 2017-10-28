@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Services\Purchase;
+namespace App\Services\Deliverable;
 
 use Illuminate\Http\Request;
 
-trait PurchaseRequestChecker
+trait DeliverableRequestChecker
 {
 
-    use PurchaseAttributeBuilder;
+    use DeliverablePropertyBuilder;
 
     protected function hasMerchandises(Request $request)
     {

@@ -15,15 +15,15 @@ class CreateDeliveryTable extends Migration
     {
         Schema::create('deliveries', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('purchase_id')->unsigned();
             $table->integer('delivery_address_id')->unsigned();
             $table->timestamp('sent_at')->nullable();
             $table->timestamp('arrived_at')->nullable();
             $table->integer('delivery_time')->nullable();
+            $table->integer('deliverable_id')->unsigned();
+            $table->string('deliverable_type');
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('purchase_id')->references('id')->on('purchases');
             $table->foreign('delivery_address_id')->references('id')->on('delivery_addresses');
         });
     }

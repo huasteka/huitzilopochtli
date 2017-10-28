@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 trait MerchandiseRequestChecker
 {
 
-    use MerchandiseAttributeBuilder;
+    use MerchandisePropertyBuilder;
 
     private function hasProduct(Request $request)
     {

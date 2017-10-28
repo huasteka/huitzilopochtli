@@ -1,22 +1,9 @@
 <?php
+
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
-final class Purchase extends Model
+final class Purchase extends Deliverable
 {
-
-    use SoftDeletes;
-
-    const CODE = 'code';
-    const DESCRIPTION = 'description';
-    const GROSS_VALUE = 'gross_value';
-    const NET_VALUE = 'net_value';
-    const DISCOUNT = 'discount';
-    
-    const RELATIONSHIP_MERCHANDISES = 'merchandises';
-    const RELATIONSHIP_DELIVERY = 'delivery';
 
     protected $fillable = [
         self::CODE,
@@ -31,22 +18,12 @@ final class Purchase extends Model
         return $this->belongsToMany(Merchandise::class)->using(MerchandisePurchase::class);
     }
 
-    public function delivery()
-    {
-        return $this->hasOne(Delivery::class, 'purchase_id');
-    }
-
     public function createMerchandise($merchandiseId, $quantity, $purchasePrice = 0.00)
     {
         $this->merchandises()->attach($merchandiseId, [
             MerchandisePurchase::QUANTITY => $quantity,
             MerchandisePurchase::PURCHASE_PRICE => $purchasePrice,
         ]);
-    }
-    
-    public function createDelivery(Delivery $delivery)
-    {
-        $this->delivery()->save($delivery);
     }
 
 }

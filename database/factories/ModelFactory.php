@@ -86,3 +86,13 @@ $factory->define(App\Purchase::class, function (Faker\Generator $faker) {
         App\Purchase::DISCOUNT => sprintf('%.2f', $faker->randomFloat(2)),
     ];
 });
+
+$factory->define(App\Sale::class, function (Faker\Generator $faker) {
+    return [
+        App\Sale::CODE => $faker->md5,
+        App\Sale::DESCRIPTION => $faker->paragraph(5),
+        App\Sale::GROSS_VALUE => sprintf('%.2f', $faker->randomFloat(2)),
+        App\Sale::NET_VALUE => sprintf('%.2f', $faker->randomFloat(2)),
+        App\Sale::DISCOUNT => sprintf('%.2f', $faker->randomFloat(2)),
+    ];
+});

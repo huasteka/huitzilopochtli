@@ -2,12 +2,12 @@
 
 namespace App\Services\Contactable;
 
-use App\Services\AttributeBuilder;
+use App\Services\PropertyBuilder;
 
-trait ContactableAttributeBuilder
+trait ContactablePropertyBuilder
 {
     
-    use AttributeBuilder;
+    use PropertyBuilder;
 
     protected static $requestAttributeContacts = 'contacts';
 

@@ -2,21 +2,16 @@
 
 namespace App\Services\Purchase;
 
-use App\Contact;
-use App\Delivery;
-use App\DeliveryAddress;
 use App\MerchandisePurchase;
 use App\Purchase;
-use App\Services\AbstractRepository;
+use App\Services\Deliverable\DeliverableRepository;
 use Illuminate\Http\Request;
 
 /**
  * @method PurchaseRequestReader getRequestReader
  */
-class PurchaseRepository extends AbstractRepository
+class PurchaseRepository extends DeliverableRepository
 {
-
-    use PurchaseRequestChecker;
 
     public function __construct(PurchaseRequestReader $requestReader)
     {
@@ -53,26 +48,6 @@ class PurchaseRepository extends AbstractRepository
                     $merchandise[MerchandisePurchase::QUANTITY],
                     $merchandise[MerchandisePurchase::PURCHASE_PRICE]
                 );
-            }
-        }
-    }
-
-    private function createDelivery(Request $request, Purchase $purchase)
-    {
-        if ($this->hasDelivery($request)) {
-            $delivery = new Delivery($this->getRequestReader()->readAttributes($request, Delivery::class));
-            $deliveryAddress = null;
-            if ($this->hasDeliveryAddressId($request)) {
-                $deliveryAddress = DeliveryAddress::find($request->input($this->getDeliveryProperty(static::$requestAttributeDeliveryAddressId)));
-            } else if ($this->hasDeliveryAddress($request)) {
-                $deliveryAddress = new DeliveryAddress($this->getRequestReader()->readAttributes($request, DeliveryAddress::class));
-                if ($deliveryAddress->save()) {
-                    $deliveryAddress->createContactByAttributes($this->getRequestReader()->readAttributes($request, Contact::class));
-                }
-            }
-            if (!is_null($deliveryAddress)) {
-                $delivery->setAttribute(static::$requestAttributeDeliveryAddressId, $deliveryAddress->getKey());
-                $purchase->createDelivery($delivery);
             }
         }
     }

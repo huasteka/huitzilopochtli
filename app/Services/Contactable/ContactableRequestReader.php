@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 abstract class ContactableRequestReader extends AbstractRequestReader
 {
 
-    use ContactableAttributeBuilder;
+    use ContactablePropertyBuilder;
 
     public function readCollection(Request $request, $type)
     {

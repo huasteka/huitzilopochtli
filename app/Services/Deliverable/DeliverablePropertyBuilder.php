@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Services\Purchase;
+namespace App\Services\Deliverable;
 
-use App\Services\AttributeBuilder;
+use App\Services\PropertyBuilder;
 
-trait PurchaseAttributeBuilder
+trait DeliverablePropertyBuilder
 {
-    
-    use AttributeBuilder;
+
+    use PropertyBuilder;
 
     protected static $requestAttributeMerchandises = 'merchandises';
     protected static $requestAttributeDelivery = 'delivery';
