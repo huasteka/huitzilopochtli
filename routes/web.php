@@ -12,7 +12,7 @@
 */
 
 $app->get('/', function () use ($app) {
-    return $app->version();
+    return 'Alive and kicking!';
 });
 
 $app->group(['prefix' => 'api'], function () use ($app) {
@@ -58,6 +58,10 @@ $app->group(['prefix' => 'api'], function () use ($app) {
     };
 
     $createRestResource($app, 'ProductController', 'products', 'productId');
+    $app->get('/products/product/{productCode}', [
+        'as' => 'products.find-by-code', 
+        'uses' => 'ProductController@findByCode'
+    ]);
     $createRestResource($app, 'SupplierController', 'suppliers', 'supplierId', function ($app, $controller, $resource_name, $resource_id) use ($createContactableResource) {
         $createContactableResource($app, $controller, $resource_name, $resource_id);
     });

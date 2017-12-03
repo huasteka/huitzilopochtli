@@ -6,6 +6,7 @@ use App\Schemas\ContactSchema;
 use App\Schemas\SupplierSchema;
 use App\Services\Supplier\SupplierService;
 use App\Supplier;
+use App\Util\Pagination;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -19,9 +20,10 @@ final class SupplierController extends ContactableController
         $this->supplierService = $supplierService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->withJsonApi($this->getEncoder()->encodeData(Supplier::all()));
+        $pageSize = Pagination::getInstance($request)->getPageSize();
+        return $this->withJsonApi($this->getEncoder()->encodeData(Supplier::paginate($pageSize)));
     }
 
     public function store(Request $request)

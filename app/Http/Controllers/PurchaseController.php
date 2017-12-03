@@ -11,6 +11,7 @@ use App\Schemas\MerchandiseSchema;
 use App\Schemas\ProductSchema;
 use App\Schemas\PurchaseSchema;
 use App\Services\Purchase\PurchaseService;
+use App\Util\Pagination;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -24,9 +25,10 @@ class PurchaseController extends RestController
         $this->purchaseService = $purchaseService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->withJsonApi($this->getEncoder()->encodeData(Purchase::all()));
+        $pageSize = Pagination::getInstance($request)->getPageSize();
+        return $this->withJsonApi($this->getEncoder()->encodeData(Purchase::paginate($pageSize)));
     }
 
     public function store(Request $request)

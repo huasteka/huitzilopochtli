@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Product;
 use App\Schemas\ProductSchema;
 use App\Services\Product\ProductService;
+use App\Util\Pagination;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -18,9 +19,10 @@ final class ProductController extends RestController
         $this->productService = $productService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->withJsonApi($this->getEncoder()->encodeData(Product::all()));
+        $pageSize = Pagination::getInstance($request)->getPageSize();
+        return $this->withJsonApi($this->getEncoder()->encodeData(Product::paginate($pageSize)));
     }
 
     public function store(Request $request)
@@ -33,6 +35,12 @@ final class ProductController extends RestController
     public function show($productId)
     {
         return $this->withJsonApi($this->getEncoder()->encodeData(Product::find($productId)));
+    }
+
+    public function findByCode($productCode)
+    {
+        $product = Product::where(Product::CODE, $productCode)->first();
+        return $this->withJsonApi($this->getEncoder()->encodeData($product));
     }
 
     public function update(Request $request, $productId)

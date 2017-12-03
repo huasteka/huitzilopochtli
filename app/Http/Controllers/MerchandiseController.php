@@ -6,6 +6,7 @@ use App\Product;
 use App\Schemas\MerchandiseSchema;
 use App\Schemas\ProductSchema;
 use App\Services\Merchandise\MerchandiseService;
+use App\Util\Pagination;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -19,9 +20,10 @@ class MerchandiseController extends RestController
         $this->merchandiseService = $merchandiseService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->withJsonApi($this->getEncoder()->encodeData(Merchandise::all()));
+        $pageSize = Pagination::getInstance($request)->getPageSize();
+        return $this->withJsonApi($this->getEncoder()->encodeData(Merchandise::paginate($pageSize)));
     }
 
     public function store(Request $request)

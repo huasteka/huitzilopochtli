@@ -24,9 +24,10 @@ class SaleController extends RestController
         $this->saleService = $saleService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->withJsonApi($this->getEncoder()->encodeData(Sale::all()));
+        $pageSize = Pagination::getInstance($request)->getPageSize();
+        return $this->withJsonApi($this->getEncoder()->encodeData(Sale::paginate($pageSize)));
     }
 
     public function store(Request $request)

@@ -6,6 +6,7 @@ use App\Contact;
 use App\Schemas\ClientSchema;
 use App\Schemas\ContactSchema;
 use App\Services\Client\ClientService;
+use App\Util\Pagination;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -19,9 +20,10 @@ class ClientController extends ContactableController
         $this->clientService = $clientService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->withJsonApi($this->getEncoder()->encodeData(Client::all()));
+        $pageSize = Pagination::getInstance($request)->getPageSize();
+        return $this->withJsonApi($this->getEncoder()->encodeData(Client::paginate($pageSize)));
     }
 
     public function store(Request $request)
