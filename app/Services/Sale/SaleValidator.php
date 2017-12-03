@@ -29,6 +29,9 @@ class SaleValidator extends DeliverableValidator
                 $this->getMerchandiseProperty(MerchandiseSale::QUANTITY) => 'required|min:1',
                 $this->getMerchandiseProperty(MerchandiseSale::RETAIL_PRICE) => 'required|min:0',
             ]);
+            if ($this->hasClient($request)) {
+                $rules[$this->getMerchandiseProperty(MerchandiseSale::CLIENT_ID)] = 'required|exists:clients,id';
+            }
         }
         return $rules;
     }

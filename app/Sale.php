@@ -18,12 +18,16 @@ final class Sale extends Deliverable
         return $this->belongsToMany(Merchandise::class)->using(MerchandiseSale::class);
     }
 
-    public function createMerchandise($merchandiseId, $quantity, $retailPrice = 0.00)
+    public function createMerchandise($merchandiseId, $quantity, $retailPrice = 0.00, $clientId = null)
     {
-        $this->merchandises()->attach($merchandiseId, [
+        $merchandisePivot = [
             MerchandiseSale::QUANTITY => $quantity,
             MerchandiseSale::RETAIL_PRICE => $retailPrice,
-        ]);
+        ];
+        if (!is_null($clientId)) {
+            $merchandisePivot[MerchandiseSale::CLIENT_ID] = $clientId;
+        }
+        $this->merchandises()->attach($merchandiseId, $merchandisePivot);
     }
 
 }

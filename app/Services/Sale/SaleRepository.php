@@ -46,7 +46,8 @@ class SaleRepository extends DeliverableRepository
                 $sale->createMerchandise(
                     $merchandise[self::$requestAttributeId],
                     $merchandise[MerchandiseSale::QUANTITY],
-                    $merchandise[MerchandiseSale::RETAIL_PRICE]
+                    $this->getByKey($merchandise, MerchandiseSale::RETAIL_PRICE, 0.00),
+                    $this->getByKey($merchandise, MerchandiseSale::CLIENT_ID, null)
                 );
             }
         }
