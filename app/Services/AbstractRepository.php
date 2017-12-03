@@ -22,5 +22,9 @@ abstract class AbstractRepository
     {
         return $this->requestReader;
     }
+    
+    protected function getByKey($collection, $key, $default) {
+        return isset($collection[$key]) ? $collection[$key] : $default;
+    }
 
 }

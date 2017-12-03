@@ -46,7 +46,8 @@ class PurchaseRepository extends DeliverableRepository
                 $purchase->createMerchandise(
                     $merchandise[self::$requestAttributeId],
                     $merchandise[MerchandisePurchase::QUANTITY],
-                    $merchandise[MerchandisePurchase::PURCHASE_PRICE]
+                    $this->getByKey($merchandise, MerchandisePurchase::PURCHASE_PRICE, 0.00),
+                    $this->getByKey($merchandise, MerchandisePurchase::SUPPLIER_ID, null)
                 );
             }
         }

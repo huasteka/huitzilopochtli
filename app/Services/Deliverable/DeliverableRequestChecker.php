@@ -14,6 +14,16 @@ trait DeliverableRequestChecker
         return $request->has(static::$requestAttributeMerchandises);
     }
 
+    protected function hasSupplier(Request $request)
+    {
+        return $request->has($this->getMerchandiseProperty(static::$requestAttributeMerchandisesSupplierId));
+    }
+
+    protected function hasClient(Request $request)
+    {
+        return $request->has($this->getMerchandiseProperty(static::$requestAttributeMerchandisesClientId));
+    }
+
     protected function hasDelivery(Request $request)
     {
         return $request->has(static::$requestAttributeDelivery);

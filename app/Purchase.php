@@ -18,12 +18,16 @@ final class Purchase extends Deliverable
         return $this->belongsToMany(Merchandise::class)->using(MerchandisePurchase::class);
     }
 
-    public function createMerchandise($merchandiseId, $quantity, $purchasePrice = 0.00)
+    public function createMerchandise($merchandiseId, $quantity, $purchasePrice = 0.00, $supplierId = null)
     {
-        $this->merchandises()->attach($merchandiseId, [
+        $merchandisePivot = [
             MerchandisePurchase::QUANTITY => $quantity,
             MerchandisePurchase::PURCHASE_PRICE => $purchasePrice,
-        ]);
+        ];
+        if (!is_null($supplierId)) {
+            $merchandisePivot[MerchandisePurchase::SUPPLIER_ID] = $supplierId;
+        }
+        $this->merchandises()->attach($merchandiseId, $merchandisePivot);
     }
 
 }

@@ -10,6 +10,8 @@ trait DeliverablePropertyBuilder
     use PropertyBuilder;
 
     protected static $requestAttributeMerchandises = 'merchandises';
+    protected static $requestAttributeMerchandisesSupplierId = 'supplier_id';
+    protected static $requestAttributeMerchandisesClientId = 'client_id';
     protected static $requestAttributeDelivery = 'delivery';
     protected static $requestAttributeDeliveryAddress = 'delivery_address';
     protected static $requestAttributeDeliveryAddressId = 'delivery_address_id';
