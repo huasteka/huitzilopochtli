@@ -15,7 +15,7 @@ class AddClientToSalesTable extends Migration
     {
         Schema::table('sales', function (Blueprint $table) {
             $table->integer('client_id')->unsigned();
-            $table->foreign('client_id')->refereces('id')->on('clients');
+            $table->foreign('client_id')->references('id')->on('clients');
         });
     }
 

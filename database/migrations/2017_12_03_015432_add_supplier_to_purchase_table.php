@@ -15,7 +15,7 @@ class AddSupplierToPurchaseTable extends Migration
     {
         Schema::table('purchases', function (Blueprint $table) {
             $table->integer('supplier_id')->unsigned();
-            $table->foreign('supplier_id')->refereces('id')->on('suppliers');
+            $table->foreign('supplier_id')->references('id')->on('suppliers');
         });
     }
 
