@@ -24,14 +24,11 @@ class SaleValidator extends DeliverableValidator
     {
         $rules = [];
         if ($this->hasMerchandises($request)) {
-            $rules = array_merge($rules, [
+            $rules = array_merge($rules, $this->getValidationRulesForMerchandiseClient($request), [
                 $this->getMerchandiseProperty(static::$requestAttributeId) => 'required|exists:merchandises,id',
                 $this->getMerchandiseProperty(MerchandiseSale::QUANTITY) => 'required|min:1',
                 $this->getMerchandiseProperty(MerchandiseSale::RETAIL_PRICE) => 'required|min:0',
             ]);
-            if ($this->hasClient($request)) {
-                $rules[$this->getMerchandiseProperty(MerchandiseSale::CLIENT_ID)] = 'required|exists:clients,id';
-            }
         }
         return $rules;
     }

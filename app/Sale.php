@@ -20,6 +20,16 @@ final class Sale extends Deliverable
 
     public function createMerchandise($merchandiseId, $quantity, $retailPrice = 0.00, $clientId = null)
     {
+        $this->merchandises()->attach($merchandiseId, $this->createMerchandisePivot($quantity, $retailPrice, $clientId));
+    }
+
+    public function updateMerchandise($merchandiseId, $quantity, $retailPrice = 0.00, $clientId = null)
+    {
+        $this->merchandises()->updateExistingPivot($merchandiseId, $this->createMerchandisePivot($quantity, $retailPrice, $clientId));
+    }
+
+    private function createMerchandisePivot($quantity, $retailPrice = 0.00, $clientId = null)
+    {
         $merchandisePivot = [
             MerchandiseSale::QUANTITY => $quantity,
             MerchandiseSale::RETAIL_PRICE => $retailPrice,
@@ -27,7 +37,7 @@ final class Sale extends Deliverable
         if (!is_null($clientId)) {
             $merchandisePivot[MerchandiseSale::CLIENT_ID] = $clientId;
         }
-        $this->merchandises()->attach($merchandiseId, $merchandisePivot);
+        return $merchandisePivot;
     }
 
 }

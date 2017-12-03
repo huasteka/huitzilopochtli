@@ -13,8 +13,8 @@ class AddClientToSalesTable extends Migration
      */
     public function up()
     {
-        Schema::table('sales', function (Blueprint $table) {
-            $table->integer('client_id')->unsigned();
+        Schema::table('merchandise_sale', function (Blueprint $table) {
+            $table->integer('client_id')->nullable()->unsigned();
             $table->foreign('client_id')->references('id')->on('clients');
         });
     }
@@ -26,7 +26,7 @@ class AddClientToSalesTable extends Migration
      */
     public function down()
     {
-        Schema::table('sales', function (Blueprint $table) {
+        Schema::table('merchandise_sale', function (Blueprint $table) {
             $table->dropForeign(['client_id']);
         });
     }

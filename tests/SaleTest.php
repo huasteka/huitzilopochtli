@@ -113,6 +113,8 @@ class SaleTest extends DeliverableTest
 
     private function createSaleRequest(App\Delivery $delivery)
     {
+        $clientId = factory(App\Client::class)->create()->getKey();
+        
         $sale = factory(App\Sale::class)->make();
         $sale->setAttribute('delivery', $delivery);
         $saleRequest = $this->convertObjectToArray($sale);
@@ -120,11 +122,15 @@ class SaleTest extends DeliverableTest
 
         $merchandises = $this->createMerchandises(5);
         foreach ($merchandises as $merchandise) {
-            $saleRequest['merchandises'][] = [
+            $merchandiseProperties = [
                 'id' => $merchandise->getKey(),
                 'retail_price' => mt_rand(1, 99999),
                 'quantity' => mt_rand(1, 99),
             ];
+            if ($this->getRandomBoolean()) {
+                $merchandiseProperties['client_id'] = $clientId;
+            }
+            $saleRequest['merchandises'][] = $merchandiseProperties;
         }
         return $saleRequest;
     }

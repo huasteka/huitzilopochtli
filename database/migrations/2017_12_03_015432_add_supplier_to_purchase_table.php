@@ -13,8 +13,8 @@ class AddSupplierToPurchaseTable extends Migration
      */
     public function up()
     {
-        Schema::table('purchases', function (Blueprint $table) {
-            $table->integer('supplier_id')->unsigned();
+        Schema::table('merchandise_purchase', function (Blueprint $table) {
+            $table->integer('supplier_id')->nullable()->unsigned();
             $table->foreign('supplier_id')->references('id')->on('suppliers');
         });
     }
@@ -26,7 +26,7 @@ class AddSupplierToPurchaseTable extends Migration
      */
     public function down()
     {
-        Schema::table('purchases', function (Blueprint $table) {
+        Schema::table('merchandise_purchase', function (Blueprint $table) {
             $table->dropForeign(['supplier_id']);
         });
     }

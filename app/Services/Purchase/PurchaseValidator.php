@@ -24,14 +24,11 @@ class PurchaseValidator extends DeliverableValidator
     {
         $rules = [];
         if ($this->hasMerchandises($request)) {
-            $rules = array_merge($rules, [
+            $rules = array_merge($rules, $this->getValidationRulesForMerchandiseSupplier($request), [
                 $this->getMerchandiseProperty(static::$requestAttributeId) => 'required|exists:merchandises,id',
                 $this->getMerchandiseProperty(MerchandisePurchase::QUANTITY) => 'required|min:1',
                 $this->getMerchandiseProperty(MerchandisePurchase::PURCHASE_PRICE) => 'required|min:0',
             ]);
-            if ($this->hasSupplier($request)) {
-                $rules[$this->getMerchandiseProperty(MerchandisePurchase::SUPPLIER_ID)] = 'required|exists:suppliers,id'; 
-            }
         }
         return $rules;
     }

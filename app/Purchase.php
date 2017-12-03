@@ -20,6 +20,16 @@ final class Purchase extends Deliverable
 
     public function createMerchandise($merchandiseId, $quantity, $purchasePrice = 0.00, $supplierId = null)
     {
+        $this->merchandises()->attach($merchandiseId, $this->createMerchandisePivot($quantity, $purchasePrice, $supplierId));
+    }
+    
+    public function updateMerchandise($merchandiseId, $quantity, $purchasePrice = 0.00, $supplierId = null)
+    {
+        $this->merchandises()->updateExistingPivot($merchandiseId, $this->createMerchandisePivot($quantity, $purchasePrice, $supplierId));
+    }
+
+    private function createMerchandisePivot($quantity, $purchasePrice = 0.00, $supplierId = null)
+    {
         $merchandisePivot = [
             MerchandisePurchase::QUANTITY => $quantity,
             MerchandisePurchase::PURCHASE_PRICE => $purchasePrice,
@@ -27,7 +37,7 @@ final class Purchase extends Deliverable
         if (!is_null($supplierId)) {
             $merchandisePivot[MerchandisePurchase::SUPPLIER_ID] = $supplierId;
         }
-        $this->merchandises()->attach($merchandiseId, $merchandisePivot);
+        return $merchandisePivot;
     }
 
 }

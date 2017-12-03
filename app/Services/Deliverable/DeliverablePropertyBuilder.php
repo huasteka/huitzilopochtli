@@ -19,7 +19,11 @@ trait DeliverablePropertyBuilder
 
     protected function getMerchandiseProperty($merchandiseProperty)
     {
-        return $this->property(static::$requestAttributeMerchandises, '*', $merchandiseProperty);
+        return $this->getMerchandisePropertyAt($merchandiseProperty, '*');
+    }
+    
+    protected function getMerchandisePropertyAt($merchandiseProperty, $indexAt) {
+        return $this->property(static::$requestAttributeMerchandises, $indexAt, $merchandiseProperty);
     }
 
     protected function getDeliveryProperty($deliveryProperty)

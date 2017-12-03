@@ -11,6 +11,7 @@ use App\Schemas\MerchandiseSchema;
 use App\Schemas\ProductSchema;
 use App\Schemas\SaleSchema;
 use App\Services\Sale\SaleService;
+use App\Util\Pagination;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 

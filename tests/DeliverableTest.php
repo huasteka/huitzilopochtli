@@ -42,4 +42,9 @@ abstract class DeliverableTest extends TestCase
         return $delivery;
     }
 
+    protected function getRandomBoolean()
+    {
+        return mt_rand(1, 10) % 2 == 0;
+    }
+    
 }

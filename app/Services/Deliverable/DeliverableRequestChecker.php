@@ -13,15 +13,15 @@ trait DeliverableRequestChecker
     {
         return $request->has(static::$requestAttributeMerchandises);
     }
-
-    protected function hasSupplier(Request $request)
+    
+    protected function hasSupplierAt(Request $request, $indexAt)
     {
-        return $request->has($this->getMerchandiseProperty(static::$requestAttributeMerchandisesSupplierId));
+        return $request->has($this->getMerchandisePropertyAt(static::$requestAttributeMerchandisesSupplierId, $indexAt));
     }
 
-    protected function hasClient(Request $request)
+    protected function hasClientAt(Request $request, $indexAt)
     {
-        return $request->has($this->getMerchandiseProperty(static::$requestAttributeMerchandisesClientId));
+        return $request->has($this->getMerchandisePropertyAt(static::$requestAttributeMerchandisesClientId, $indexAt));
     }
 
     protected function hasDelivery(Request $request)

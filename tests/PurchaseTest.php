@@ -113,6 +113,8 @@ class PurchaseTest extends DeliverableTest
 
     private function createPurchaseRequest(App\Delivery $delivery)
     {
+        $supplierId = factory(App\Supplier::class)->create()->getKey();
+        
         $purchase = factory(App\Purchase::class)->make();
         $purchase->setAttribute('delivery', $delivery);
         $purchaseRequest = $this->convertObjectToArray($purchase);
@@ -120,11 +122,15 @@ class PurchaseTest extends DeliverableTest
 
         $merchandises = $this->createMerchandises(5);
         foreach ($merchandises as $merchandise) {
-            $purchaseRequest['merchandises'][] = [
+            $merchandiseProperties = [
                 'id' => $merchandise->getKey(),
                 'purchase_price' => mt_rand(1, 99999),
                 'quantity' => mt_rand(1, 99),
             ];
+            if ($this->getRandomBoolean()) {
+                $merchandiseProperties['supplier_id'] = $supplierId;
+            }
+            $purchaseRequest['merchandises'][] = $merchandiseProperties;
         }
         return $purchaseRequest;
     }
