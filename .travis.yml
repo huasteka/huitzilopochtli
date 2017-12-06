@@ -10,5 +10,5 @@ before_script:
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.xml
 after_success:
-  - vendor/bin/test-reporter
+  - vendor/bin/test-reporter --coverage-report=coverage.xml
   - bash <(curl -s https://codecov.io/bash)
