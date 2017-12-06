@@ -2,7 +2,8 @@
 
 [![Travis](https://img.shields.io/travis/murilocosta/huitzilopochtli.svg?style=flat-square)](https://travis-ci.org/murilocosta/huitzilopochtli)
 [![GitHub issues](https://img.shields.io/github/issues/murilocosta/huitzilopochtli.svg?style=flat-square)](https://github.com/murilocosta/huitzilopochtli/issues)
-[![Code Climate](https://img.shields.io/codeclimate/github/murilocosta/huitzilopochtli.svg?style=flat-square)](https://codeclimate.com/github/murilocosta/huitzilopochtli)
+[![Maintainability](https://api.codeclimate.com/v1/badges/53d7c83ee31c34096261/maintainability)](https://codeclimate.com/github/murilocosta/huitzilopochtli/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/53d7c83ee31c34096261/test_coverage)](https://codeclimate.com/github/murilocosta/huitzilopochtli/test_coverage)
 [![Codecov](https://img.shields.io/codecov/c/github/murilocosta/huitzilopochtli.svg?style=flat-square)](https://codecov.io/gh/murilocosta/huitzilopochtli)
 
 Huitzilopochtli is an open source purchases and sales management API developed with [Lumen Framework](https://lumen.laravel.com).
