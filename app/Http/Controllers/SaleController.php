@@ -25,12 +25,26 @@ class SaleController extends RestController
         $this->saleService = $saleService;
     }
 
+    /**
+     * @api {get} /sales Fetch sale list
+     * @apiVersion 1.0.0
+     * @apiGroup Sale
+     * @apiName GetSales
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function index(Request $request)
     {
         $pageSize = Pagination::getInstance($request)->getPageSize();
         return $this->withJsonApi($this->getEncoder()->encodeData(Sale::paginate($pageSize)));
     }
 
+    /**
+     * @api {post} /sales Create sale
+     * @apiVersion 1.0.0
+     * @apiGroup Sale
+     * @apiName CreateSale
+     * @apiHeader {String} Authorization Generated JWT token
+     */
     public function store(Request $request)
     {
         $this->validateRequest($request, $this->getSaleService()->validateOnCreate($request));
@@ -38,11 +52,25 @@ class SaleController extends RestController
         return $this->withJsonApi($this->getEncoder()->encodeData($sale), Response::HTTP_CREATED);
     }
 
+    /**
+     * @api {get} /sales/:saleId Fetch sale
+     * @apiVersion 1.0.0
+     * @apiGroup Sale
+     * @apiName GetSale
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function show($saleId)
     {
         return $this->withJsonApi($this->getEncoder()->encodeData(Sale::find($saleId)));
     }
 
+    /**
+     * @api {put} /sales/:saleId Update sale
+     * @apiVersion 1.0.0
+     * @apiGroup Sale
+     * @apiName UpdateSale
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function update(Request $request, $saleId)
     {
         return $this->findSaleAndExecuteCallback($saleId, function (Sale $sale) use ($request) {
@@ -52,6 +80,13 @@ class SaleController extends RestController
         });
     }
 
+    /**
+     * @api {delete} /sales/:saleId Delete sale
+     * @apiVersion 1.0.0
+     * @apiGroup Sale
+     * @apiName DeleteSale
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function destroy($saleId)
     {
         return $this->findSaleAndExecuteCallback($saleId, function (Sale $sale) {

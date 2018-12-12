@@ -25,12 +25,26 @@ class PurchaseController extends RestController
         $this->purchaseService = $purchaseService;
     }
 
+    /**
+     * @api {get} /purchases Fetch purchases list
+     * @apiVersion 1.0.0
+     * @apiGroup Purchase
+     * @apiName GetPurchases
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function index(Request $request)
     {
         $pageSize = Pagination::getInstance($request)->getPageSize();
         return $this->withJsonApi($this->getEncoder()->encodeData(Purchase::paginate($pageSize)));
     }
 
+    /**
+     * @api {post} /purchases Create purchase
+     * @apiVersion 1.0.0
+     * @apiGroup Purchase
+     * @apiName CreatePurchase
+     * @apiHeader {String} Authorization Generated JWT token
+     */
     public function store(Request $request)
     {
         $this->validate($request, $this->getPurchaseService()->validateOnCreate($request));
@@ -38,11 +52,25 @@ class PurchaseController extends RestController
         return $this->withJsonApi($this->getEncoder()->encodeData($purchase), Response::HTTP_CREATED);
     }
 
+    /**
+     * @api {get} /purchases/:purchaseId Fetch purchase
+     * @apiVersion 1.0.0
+     * @apiGroup Purchase
+     * @apiName GetPurchase
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function show($purchaseId)
     {
         return $this->withJsonApi($this->getEncoder()->encodeData(Purchase::find($purchaseId)));
     }
 
+    /**
+     * @api {put} /purchases/:purchaseId Update purchase
+     * @apiVersion 1.0.0
+     * @apiGroup Purchase
+     * @apiName UpdatePurchase
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function update(Request $request, $purchaseId)
     {
         return $this->findPurchaseAndExecuteCallback($purchaseId, function (Purchase $purchase) use ($request) {
@@ -52,6 +80,13 @@ class PurchaseController extends RestController
         });
     }
 
+    /**
+     * @api {delete} /purchases/:purchaseId Delete purchase
+     * @apiVersion 1.0.0
+     * @apiGroup Purchase
+     * @apiName DeletePurchase
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function destroy($purchaseId)
     {
         return $this->findPurchaseAndExecuteCallback($purchaseId, function (Purchase $purchase) {

@@ -12,7 +12,7 @@
 */
 
 $app->get('/', function () use ($app) {
-    return 'Alive and kicking!';
+    return Illuminate\Support\Facades\File::get(base_path('public') . '/index.html');
 });
 
 $app->group(['prefix' => 'api'], function () use ($app) {
