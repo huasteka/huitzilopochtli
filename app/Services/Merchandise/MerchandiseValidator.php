@@ -14,9 +14,7 @@ class MerchandiseValidator implements ValidatorInterface
 
     public function getValidationRulesOnCreate(Request $request)
     {
-        return $this->getValidationRules($request, [
-            $this->getProductProperty(Product::CODE) => 'required|exists:products,code'
-        ]);
+        return $this->getValidationRules($request);
     }
 
     public function getValidationRulesOnUpdate(Request $request)
@@ -32,7 +30,10 @@ class MerchandiseValidator implements ValidatorInterface
         if ($this->hasProductId($request)) {
             $rules = [static::$requestAttributeProductId => 'required|exists:products,id'];
         } else if ($this->hasProduct($request)) {
-            $rules = array_merge([$this->getProductProperty(Product::NAME) => 'required'], $productRules);
+            $rules = array_merge([
+                $this->getProductProperty(Product::NAME) => 'required',
+                $this->getProductProperty(Product::CODE) => 'required|unique:products,code'
+            ], $productRules);
         }
         return array_merge($rules, [
             Merchandise::RETAIL_PRICE => 'required|min:0',
