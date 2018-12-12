@@ -14,15 +14,10 @@ class ProductValidator implements ValidatorInterface
 
     public function getValidationRulesOnCreate(Request $request)
     {
-        return array_merge($this->getValidationRules($request), [Product::CODE => 'required|unique:products']);
+        return array_merge($this->getValidationRulesOnUpdate($request), [Product::CODE => 'required|unique:products']);
     }
 
     public function getValidationRulesOnUpdate(Request $request)
-    {
-        return array_merge($this->getValidationRules($request), [Product::CODE => 'required|exists:products']);
-    }
-
-    private function getValidationRules(Request $request)
     {
         $rules = [Product::NAME => 'required|min:3'];
         if ($this->hasMerchandise($request)) {

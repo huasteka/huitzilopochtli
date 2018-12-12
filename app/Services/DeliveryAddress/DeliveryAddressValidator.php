@@ -21,8 +21,9 @@ class DeliveryAddressValidator extends ContactableValidator
 
     public function getValidationRulesOnCreateAndUpdate(Request $request)
     {
-        return array_merge(
-            [DeliveryAddress::IS_DEFAULT => 'required|boolean'],
+        return array_merge([
+            DeliveryAddress::IS_DEFAULT => 'required|boolean'
+        ],
             $this->getValidationRulesForContacts($request)
         );
     }

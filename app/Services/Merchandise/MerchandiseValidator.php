@@ -9,17 +9,21 @@ use Illuminate\Http\Request;
 
 class MerchandiseValidator implements ValidatorInterface
 {
-    
+
     use MerchandiseRequestChecker;
 
     public function getValidationRulesOnCreate(Request $request)
     {
-        return $this->getValidationRules($request, [$this->getProductProperty(Product::CODE) => 'required|unique:products,code']);
+        return $this->getValidationRules($request, [
+            $this->getProductProperty(Product::CODE) => 'required|exists:products,code'
+        ]);
     }
 
     public function getValidationRulesOnUpdate(Request $request)
     {
-        return $this->getValidationRules($request, [$this->getProductProperty(Product::CODE) => 'required']);
+        return $this->getValidationRules($request, [
+            $this->getProductProperty(Product::CODE) => 'required'
+        ]);
     }
 
     private function getValidationRules(Request $request, array $productRules = [])

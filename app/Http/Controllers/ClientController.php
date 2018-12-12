@@ -20,12 +20,26 @@ class ClientController extends ContactableController
         $this->clientService = $clientService;
     }
 
+    /**
+     * @api {get} /clients Fetch clients list
+     * @apiVersion 1.0.0
+     * @apiGroup Client
+     * @apiName GetClients
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function index(Request $request)
     {
         $pageSize = Pagination::getInstance($request)->getPageSize();
         return $this->withJsonApi($this->getEncoder()->encodeData(Client::paginate($pageSize)));
     }
 
+    /**
+     * @api {post} /clients Create client
+     * @apiVersion 1.0.0
+     * @apiGroup Client
+     * @apiName CreateClient
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function store(Request $request)
     {
         $this->validateRequest($request, $this->getClientService()->validateOnCreate($request));
@@ -33,20 +47,44 @@ class ClientController extends ContactableController
         return $this->withJsonApi($this->getEncoder()->encodeData($client), Response::HTTP_CREATED);
     }
 
+    /**
+     * @api {get} /accounts/:clientId Fetch client
+     * @apiVersion 1.0.0
+     * @apiGroup Client
+     * @apiName GetClient
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function show($clientId)
     {
         return $this->withJsonApi($this->getEncoder()->encodeData(Client::find($clientId)));
     }
 
+    /**
+     * @api {put} /accounts/:clientId Update client
+     * @apiVersion 1.0.0
+     * @apiGroup Client
+     * @apiName UpdateClient
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function update(Request $request, $clientId)
     {
         return $this->findClientAndExecuteCallback($clientId, function (Client $client) use ($request) {
-            $this->validateRequest($request, $this->getClientService()->validateOnUpdate($request));
+            $legalDocumentCode = Client::LEGAL_DOCUMENT_CODE;
+            $this->validateRequest($request, $this->getClientService()->validateOnUpdate($request), [
+                $legalDocumentCode => "required|unique:clients,{$legalDocumentCode},{$client->id}"
+            ]);
             $this->getClientService()->update($request, $client);
             return $this->withStatus(Response::HTTP_NO_CONTENT);
         });
     }
 
+    /**
+     * @api {delete} /accounts/:clientId Delete client
+     * @apiVersion 1.0.0
+     * @apiGroup Client
+     * @apiName DeleteClient
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function destroy($clientId)
     {
         return $this->findClientAndExecuteCallback($clientId, function (Client $client) {
@@ -55,6 +93,13 @@ class ClientController extends ContactableController
         });
     }
 
+    /**
+     * @api {post} /clients/:clientId/contacts Create client's contact
+     * @apiVersion 1.0.0
+     * @apiGroup Client
+     * @apiName CreateClientContact
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function storeContact(Request $request, $clientId)
     {
         return $this->storeContactHandler($request, $this->getClientService(), function (callable $createContact) use ($clientId) {
@@ -64,6 +109,13 @@ class ClientController extends ContactableController
         });
     }
 
+    /**
+     * @api {put} /accounts/:clientId/contacts/:contactId Update client's contact
+     * @apiVersion 1.0.0
+     * @apiGroup Client
+     * @apiName UpdateClientContact
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function updateContact(Request $request, $clientId, $contactId)
     {
         return $this->updateContactHandler($request, $this->getClientService(), $contactId, function (callable $updateContact) use ($clientId) {
@@ -73,6 +125,13 @@ class ClientController extends ContactableController
         });
     }
 
+    /**
+     * @api {delete} /accounts/:clientId/contacts/:contactId Delete client's contact
+     * @apiVersion 1.0.0
+     * @apiGroup Client
+     * @apiName DeleteClientContact
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function destroyContact(Request $request, $clientId, $contactId)
     {
         return $this->destroyContactHandler($request, $contactId, function (callable $destroyContact) use ($clientId) {

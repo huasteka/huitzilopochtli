@@ -19,12 +19,26 @@ final class ProductController extends RestController
         $this->productService = $productService;
     }
 
+    /**
+     * @api {get} /products Fetch product list
+     * @apiVersion 1.0.0
+     * @apiGroup Product
+     * @apiName GetProducts
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function index(Request $request)
     {
         $pageSize = Pagination::getInstance($request)->getPageSize();
         return $this->withJsonApi($this->getEncoder()->encodeData(Product::paginate($pageSize)));
     }
 
+    /**
+     * @api {post} /products Create product
+     * @apiVersion 1.0.0
+     * @apiGroup Product
+     * @apiName CreateProduct
+     * @apiHeader {String} Authorization Generated JWT token
+     */
     public function store(Request $request)
     {
         $this->validateRequest($request, $this->getProductService()->validateOnCreate($request));
@@ -32,26 +46,57 @@ final class ProductController extends RestController
         return $this->withJsonApi($this->getEncoder()->encodeData($product), Response::HTTP_CREATED);
     }
 
+    /**
+     * @api {get} /products/:productId Fetch product
+     * @apiVersion 1.0.0
+     * @apiGroup Product
+     * @apiName GetProduct
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function show($productId)
     {
         return $this->withJsonApi($this->getEncoder()->encodeData(Product::find($productId)));
     }
 
+    /**
+     * @api {get} /products/product/:productCode Fetch product by code
+     * @apiVersion 1.0.0
+     * @apiGroup Product
+     * @apiName GetProductByCode
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function findByCode($productCode)
     {
         $product = Product::where(Product::CODE, $productCode)->first();
         return $this->withJsonApi($this->getEncoder()->encodeData($product));
     }
 
+    /**
+     * @api {put} /products/:productId Update product
+     * @apiVersion 1.0.0
+     * @apiGroup Product
+     * @apiName UpdateProduct
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function update(Request $request, $productId)
     {
         return $this->findProductAndExecuteCallback($productId, function (Product $product) use ($request) {
-            $this->validateRequest($request, $this->getProductService()->validateOnUpdate($request));
+            $productCode = Product::CODE;
+            $this->validateRequest($request, $this->getProductService()->validateOnUpdate($request), [
+                $productCode => "required|unique:products,{$productCode},{$product->id}"
+            ]);
             $this->getProductService()->update($request, $product);
             return $this->withStatus(Response::HTTP_NO_CONTENT);
         });
     }
 
+    /**
+     * @api {delete} /products/:productId Delete product
+     * @apiVersion 1.0.0
+     * @apiGroup Product
+     * @apiName DeleteProduct
+     * @apiHeader {String} Authorization User generated JWT token
+     */
     public function destroy($productId)
     {
         return $this->findProductAndExecuteCallback($productId, function (Product $product) {

@@ -11,19 +11,12 @@ class SupplierValidator extends ContactableValidator
 
     public function getValidationRulesOnCreate(Request $request)
     {
-        return array_merge($this->getValidationRules($request), [
+        return array_merge($this->getValidationRulesOnUpdate($request), [
             Supplier::LEGAL_DOCUMENT_CODE => 'required|unique:suppliers',
         ]);
     }
 
     public function getValidationRulesOnUpdate(Request $request)
-    {
-        return array_merge($this->getValidationRules($request), [
-            Supplier::LEGAL_DOCUMENT_CODE => 'required|exists:suppliers',
-        ]);
-    }
-
-    private function getValidationRules(Request $request)
     {
         $rules = [
             Supplier::NAME => 'required',
@@ -31,5 +24,5 @@ class SupplierValidator extends ContactableValidator
         ];
         return array_merge($rules, $this->getValidationRulesForContacts($request));
     }
-    
+
 }
