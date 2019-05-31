@@ -1,10 +1,10 @@
 # Huitzilopochtli
 
-[![Travis](https://img.shields.io/travis/murilocosta/huitzilopochtli.svg?style=flat-square)](https://travis-ci.org/murilocosta/huitzilopochtli)
-[![GitHub issues](https://img.shields.io/github/issues/murilocosta/huitzilopochtli.svg?style=flat-square)](https://github.com/murilocosta/huitzilopochtli/issues)
-[![Maintainability](https://api.codeclimate.com/v1/badges/53d7c83ee31c34096261/maintainability)](https://codeclimate.com/github/murilocosta/huitzilopochtli/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/53d7c83ee31c34096261/test_coverage)](https://codeclimate.com/github/murilocosta/huitzilopochtli/test_coverage)
-[![Codecov](https://img.shields.io/codecov/c/github/murilocosta/huitzilopochtli.svg?style=flat-square)](https://codecov.io/gh/murilocosta/huitzilopochtli)
+[![Travis](https://img.shields.io/travis/huasteka/huitzilopochtli.svg?style=flat-square)](https://travis-ci.org/huasteka/huitzilopochtli)
+[![GitHub issues](https://img.shields.io/github/issues/huasteka/huitzilopochtli.svg?style=flat-square)](https://github.com/huasteka/huitzilopochtli/issues)
+[![Maintainability](https://api.codeclimate.com/v1/badges/53d7c83ee31c34096261/maintainability)](https://codeclimate.com/github/huasteka/huitzilopochtli/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/53d7c83ee31c34096261/test_coverage)](https://codeclimate.com/github/huasteka/huitzilopochtli/test_coverage)
+[![Codecov](https://img.shields.io/codecov/c/github/huasteka/huitzilopochtli.svg?style=flat-square)](https://codecov.io/gh/huasteka/huitzilopochtli)
 
 Huitzilopochtli is an open source purchases and sales management API developed with [Lumen Framework](https://lumen.laravel.com).
 
@@ -19,14 +19,14 @@ Huitzilopochtli is an open source purchases and sales management API developed w
 To download and build the project, open a terminal and execute:
 
 ```
-git clone https://github.com/murilocosta/huitzilopochtli.git
+git clone https://github.com/huasteka/huitzilopochtli.git
 cd huitzilopochtli
 composer install
 ```
 
 Run the database migrations with the command: `php artisan migrate`.
 
-To serve the project run: `php -S localhost:8000 -t public` the application will be served at `http://localhost:8000`.
+To serve the project run: `php -S localhost:9701 -t public` the application will be served at `http://localhost:9701`.
 
 ## Configuration
 
@@ -51,6 +51,6 @@ php vendor/bin/phpunit
 
 ## License
 
-Huitzilopochtli is Copyright © 2017 Murilo Costa.
+Huitzilopochtli is Copyright © 2017 Huasteka.
 
 It is free software, and may be redistributed under the terms specified in the [LICENSE.md](LICENSE.md)
