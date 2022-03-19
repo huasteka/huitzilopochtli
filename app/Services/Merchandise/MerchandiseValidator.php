@@ -27,14 +27,15 @@ class MerchandiseValidator implements ValidatorInterface
     private function getValidationRules(Request $request, array $productRules = [])
     {
         $rules = [];
-        if ($this->hasProductId($request)) {
-            $rules = [static::$requestAttributeProductId => 'required|exists:products,id'];
-        } else if ($this->hasProduct($request)) {
+        if ($this->hasProduct($request)) {
             $rules = array_merge([
                 $this->getProductProperty(Product::NAME) => 'required',
                 $this->getProductProperty(Product::CODE) => 'required|unique:products,code'
             ], $productRules);
+        } else {
+            $rules = [static::$requestAttributeProductId => 'required|exists:products,id'];
         }
+
         return array_merge($rules, [
             Merchandise::RETAIL_PRICE => 'required|min:0',
             Merchandise::PURCHASE_PRICE => 'sometimes|required|min:0',

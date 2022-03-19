@@ -34,7 +34,7 @@ abstract class DeliverableRequestReader extends AbstractRequestReader
             Deliverable::CODE => $request->get(Deliverable::CODE),
             Deliverable::DESCRIPTION => $request->get(Deliverable::DESCRIPTION),
             Deliverable::GROSS_VALUE => $request->get(Deliverable::GROSS_VALUE, 0.00),
-            Deliverable::NET_VALUE => $request->get(Deliverable::NET_VALUE),
+            Deliverable::NET_VALUE => $request->get(Deliverable::NET_VALUE, 0.00),
             Deliverable::DISCOUNT => $request->get(Deliverable::DISCOUNT, 0.00),
         ];
     }

@@ -12,12 +12,17 @@ class SaleValidator extends DeliverableValidator
 
     public function getValidationRulesOnCreate(Request $request)
     {
-        return array_merge($this->getValidationRules($request), [Sale::CODE => 'required|unique:sales']);
+        return array_merge($this->getValidationRules($request), [
+            Sale::CODE => 'required|unique:sales',
+            static::$requestAttributeMerchandises => 'required',
+        ]);
     }
 
     public function getValidationRulesOnUpdate(Request $request)
     {
-        return array_merge($this->getValidationRules($request), [Sale::CODE => 'required|exists:sales']);
+        return array_merge($this->getValidationRules($request), [
+            Sale::CODE => 'required|exists:sales',
+        ]);
     }
 
     protected function getValidationRulesForMerchandises(Request $request)
