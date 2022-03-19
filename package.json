@@ -4,18 +4,14 @@
   "version": "1.0.0",
   "description": "An open source purchases and sales management API",
   "scripts": {
-    "postinstall": "./node_modules/.bin/apidoc -i ./app/Http/Controllers -o ./public"
+    "postinstall": "./node_modules/.bin/apidoc -i ./app/Exceptions ./app/Http/Controllers ./app/Schemas ./app/Util -o ./public"
   },
   "license": "GPL-3.0-only",
   "repository": {
     "type": "git",
     "url": "https://github.com/huasteka/huitzilopochtli.git"
   },
-  "apidoc": {
-    "title": "Huitzilopochtli",
-    "url": "https://huitzilopochtli.herokuapp.com/api"
-  },
   "dependencies": {
-    "apidoc": "~0.17.5"
+    "apidoc": "~0.50.1"
   }
 }
