@@ -11,65 +11,65 @@
 |
 */
 
-$app->get('/', function () use ($app) {
+$router->get('/', function () {
     return Illuminate\Support\Facades\File::get(base_path('public') . '/index.html');
 });
 
-$app->group(['prefix' => 'api'], function () use ($app) {
-    $createRestResource = function (Laravel\Lumen\Application $app, $controller, $resource_name, $resource_id, callable $routes = null) {
-        $app->get("/{$resource_name}", [
+$router->group(['prefix' => 'api'], function () use ($router) {
+    $createRestResource = function (Laravel\Lumen\Routing\Router $router, $controller, $resource_name, $resource_id, callable $routes = null) {
+        $router->get("/{$resource_name}", [
             'as' => "{$resource_name}.index",
             'uses' => "{$controller}@index",
         ]);
-        $app->post("/{$resource_name}", [
+        $router->post("/{$resource_name}", [
             'as' => "{$resource_name}.store",
             'uses' => "{$controller}@store",
         ]);
-        $app->get("/{$resource_name}/{{$resource_id}}", [
+        $router->get("/{$resource_name}/{{$resource_id}}", [
             'as' => "{$resource_name}.show",
             'uses' => "{$controller}@show",
         ]);
-        $app->put("/{$resource_name}/{{$resource_id}}", [
+        $router->put("/{$resource_name}/{{$resource_id}}", [
             'as' => "{$resource_name}.update",
             'uses' => "{$controller}@update",
         ]);
-        $app->delete("/{$resource_name}/{{$resource_id}}", [
+        $router->delete("/{$resource_name}/{{$resource_id}}", [
             'as' => "{$resource_name}.destroy",
             'uses' => "{$controller}@destroy",
         ]);
         if (!is_null($routes)) {
-            $routes($app, $controller, $resource_name, $resource_id);
+            $routes($router, $controller, $resource_name, $resource_id);
         }
     };
 
-    $createContactableResource = function (Laravel\Lumen\Application $app, $controller, $resource_name, $resource_id) {
-        $app->post("/{$resource_name}/{{$resource_id}}/contacts", [
+    $createContactableResource = function (Laravel\Lumen\Routing\Router $router, $controller, $resource_name, $resource_id) {
+        $router->post("/{$resource_name}/{{$resource_id}}/contacts", [
             'as' => "{$resource_name}.contacts.store",
             'uses' => "{$controller}@storeContact"
         ]);
-        $app->put("/{$resource_name}/{{$resource_id}}/contacts/{contactId}", [
+        $router->put("/{$resource_name}/{{$resource_id}}/contacts/{contactId}", [
             'as' => "{$resource_name}.contacts.update",
             'uses' => "{$controller}@updateContact"
         ]);
-        $app->delete("/{$resource_name}/{{$resource_id}}/contacts/{contactId}", [
+        $router->delete("/{$resource_name}/{{$resource_id}}/contacts/{contactId}", [
             'as' => "{$resource_name}.contacts.destroy",
             'uses' => "{$controller}@destroyContact"
         ]);
     };
 
-    $createRestResource($app, 'ProductController', 'products', 'productId');
-    $app->get('/products/product/{productCode}', [
+    $createRestResource($router, 'ProductController', 'products', 'productId');
+    $router->get('/products/{productCode}/details', [
         'as' => 'products.find-by-code', 
         'uses' => 'ProductController@findByCode'
     ]);
-    $createRestResource($app, 'SupplierController', 'suppliers', 'supplierId', function ($app, $controller, $resource_name, $resource_id) use ($createContactableResource) {
-        $createContactableResource($app, $controller, $resource_name, $resource_id);
+    $createRestResource($router, 'SupplierController', 'suppliers', 'supplierId', function ($router, $controller, $resource_name, $resource_id) use ($createContactableResource) {
+        $createContactableResource($router, $controller, $resource_name, $resource_id);
     });
-    $createRestResource($app, 'ClientController', 'clients', 'clientId', function ($app, $controller, $resource_name, $resource_id) use ($createContactableResource) {
-        $createContactableResource($app, $controller, $resource_name, $resource_id);
+    $createRestResource($router, 'ClientController', 'clients', 'clientId', function ($router, $controller, $resource_name, $resource_id) use ($createContactableResource) {
+        $createContactableResource($router, $controller, $resource_name, $resource_id);
     });
-    $createRestResource($app, 'MerchandiseController', 'merchandises', 'merchandiseId');
-    $createRestResource($app, 'DeliveryAddressController', 'delivery_addresses', 'deliveryAddressId');
-    $createRestResource($app, 'PurchaseController', 'purchases', 'purchaseId');
-    $createRestResource($app, 'SaleController', 'sales', 'saleId');
+    $createRestResource($router, 'MerchandiseController', 'merchandises', 'merchandiseId');
+    $createRestResource($router, 'DeliveryAddressController', 'delivery_addresses', 'deliveryAddressId');
+    $createRestResource($router, 'PurchaseController', 'purchases', 'purchaseId');
+    $createRestResource($router, 'SaleController', 'sales', 'saleId');
 });
