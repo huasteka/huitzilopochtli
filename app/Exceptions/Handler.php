@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -45,6 +47,32 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        return parent::render($request, $e);
+        $parentRender = parent::render($request, $e);
+
+        if ($parentRender instanceof JsonResponse) {
+            return $parentRender;
+        }
+
+        $statusCode = $parentRender->getStatusCode();
+        switch ($statusCode) {
+            case Response::HTTP_NOT_FOUND:
+                $errorMessage = 'Not found';
+                break;
+            default:
+                $errorMessage = $e->getMessage();
+                break;
+        }
+
+        if (empty($errorMessage)) {
+            $errorMessage = 'There was an error when processing the request';
+        }
+
+        $jsonResponse = [
+            'errors' => [[
+                'status' => $statusCode,
+                'message' => $errorMessage,
+            ]],
+        ];
+        return new JsonResponse($jsonResponse);
     }
 }
