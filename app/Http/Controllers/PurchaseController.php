@@ -76,7 +76,7 @@ class PurchaseController extends RestController
         return $this->findPurchaseAndExecuteCallback($purchaseId, function (Purchase $purchase) use ($request) {
             $this->validate($request, $this->getPurchaseService()->validateOnUpdate($request));
             $this->getPurchaseService()->update($request, $purchase);
-            return $this->withStatus(Response::HTTP_NOT_IMPLEMENTED);
+            return $this->withStatus(Response::HTTP_NO_CONTENT);
         });
     }
 

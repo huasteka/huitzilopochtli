@@ -22,7 +22,6 @@ abstract class DeliverableValidator implements ValidatorInterface
             Deliverable::GROSS_VALUE => 'sometimes|required|min:0',
             Deliverable::NET_VALUE => 'sometimes|required|min:0',
             Deliverable::DISCOUNT => 'sometimes|required|min:0',
-            static::$requestAttributeMerchandises => 'required',
         ];
         return array_merge(
             $deliverableRules,
