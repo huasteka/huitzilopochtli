@@ -181,10 +181,16 @@ final class SupplierController extends ContactableController
      */
     private function getEncoder()
     {
-        return $this->createEncoder([
+        $entityMap = [
             Supplier::class => SupplierSchema::class,
             Contact::class => ContactSchema::class,
-        ]);
+        ];
+
+        $includedPaths = [
+            Supplier::RELATIONSHIP_CONTACTS,
+        ];
+
+        return $this->createEncoder($entityMap, $includedPaths);
     }
 
     private function getSupplierService()

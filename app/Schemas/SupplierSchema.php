@@ -3,7 +3,8 @@
 namespace App\Schemas;
 
 use App\Supplier;
-use Neomerx\JsonApi\Schema\SchemaProvider;
+use Neomerx\JsonApi\Schema\BaseSchema;
+use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
 /**
  * @apiDefine ResponseSupplierJson
@@ -32,10 +33,18 @@ use Neomerx\JsonApi\Schema\SchemaProvider;
  * @apiSuccess {String} included.attributes.region
  * @apiSuccess {String} included.attributes.city
  */
-class SupplierSchema extends SchemaProvider
+class SupplierSchema extends BaseSchema
 {
 
-    protected $resourceType = 'suppliers';
+    /**
+     * Get resource type.
+     *
+     * @return string
+     */
+    public function getType(): string
+    {
+        return 'suppliers';
+    }
 
     /**
      * Get resource identity.
@@ -44,7 +53,7 @@ class SupplierSchema extends SchemaProvider
      *
      * @return string
      */
-    public function getId($resource)
+    public function getId($resource): ?string
     {
         return $resource->getKey();
     }
@@ -56,7 +65,7 @@ class SupplierSchema extends SchemaProvider
      *
      * @return array
      */
-    public function getAttributes($resource)
+    public function getAttributes($resource, ContextInterface $context): iterable
     {
         return [
             Supplier::NAME => $resource->getAttribute(Supplier::NAME),
@@ -66,25 +75,21 @@ class SupplierSchema extends SchemaProvider
     }
 
     /**
+     * Get resource relationships.
+     *
      * @param Supplier $resource
-     * @param bool $isPrimary
-     * @param array $includeRelationships
+     *
      * @return array
      */
-    public function getRelationships($resource, $isPrimary, array $includeRelationships)
+    public function getRelationships($resource, ContextInterface $context): iterable
     {
         return [
             Supplier::RELATIONSHIP_CONTACTS => [
-                self::DATA => function () use ($resource) {
-                    return $resource->contacts()->getEager();
-                }
+                self::RELATIONSHIP_DATA => $resource->contacts()->get(),
+                self::RELATIONSHIP_LINKS_SELF => false,
+                self::RELATIONSHIP_LINKS_RELATED => true,
             ],
         ];
-    }
-
-    public function getIncludePaths()
-    {
-        return [Supplier::RELATIONSHIP_CONTACTS];
     }
 
 }

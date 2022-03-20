@@ -3,7 +3,8 @@
 namespace App\Schemas;
 
 use App\Client;
-use Neomerx\JsonApi\Schema\SchemaProvider;
+use Neomerx\JsonApi\Schema\BaseSchema;
+use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
 /**
  * @apiDefine ResponseClientJson
@@ -31,10 +32,18 @@ use Neomerx\JsonApi\Schema\SchemaProvider;
  * @apiSuccess {String} included.attributes.region
  * @apiSuccess {String} included.attributes.city
  */
-class ClientSchema extends SchemaProvider
+class ClientSchema extends BaseSchema
 {
 
-    protected $resourceType = 'clients';
+    /**
+     * Get resource type.
+     *
+     * @return string
+     */
+    public function getType(): string
+    {
+        return 'clients';
+    }
 
     /**
      * Get resource identity.
@@ -43,7 +52,7 @@ class ClientSchema extends SchemaProvider
      *
      * @return string
      */
-    public function getId($resource)
+    public function getId($resource): ?string
     {
         return $resource->getKey();
     }
@@ -55,7 +64,7 @@ class ClientSchema extends SchemaProvider
      *
      * @return array
      */
-    public function getAttributes($resource)
+    public function getAttributes($resource, ContextInterface $context): iterable
     {
         return [
             Client::NAME => $resource->getAttribute(Client::NAME),
@@ -64,25 +73,21 @@ class ClientSchema extends SchemaProvider
     }
 
     /**
+     * Get resource relationships.
+     *
      * @param Client $resource
-     * @param bool $isPrimary
-     * @param array $includeRelationships
+     *
      * @return array
      */
-    public function getRelationships($resource, $isPrimary, array $includeRelationships)
+    public function getRelationships($resource, ContextInterface $context): iterable
     {
         return [
             Client::RELATIONSHIP_CONTACTS => [
-                self::DATA => function () use ($resource) {
-                    return $resource->contacts()->getEager();
-                }
+                self::RELATIONSHIP_DATA => $resource->contacts()->get(),
+                self::RELATIONSHIP_LINKS_SELF => false,
+                self::RELATIONSHIP_LINKS_RELATED => true,
             ],
         ];
-    }
-
-    public function getIncludePaths()
-    {
-        return [Client::RELATIONSHIP_CONTACTS];
     }
 
 }

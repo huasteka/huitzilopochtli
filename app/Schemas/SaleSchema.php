@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Schemas;
 
 use App\Merchandise;
 use App\Sale;
-use Neomerx\JsonApi\Schema\SchemaProvider;
+use Neomerx\JsonApi\Schema\BaseSchema;
+use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
 /**
  * @apiDefine ResponseSaleJson
@@ -19,34 +21,30 @@ use Neomerx\JsonApi\Schema\SchemaProvider;
  * @apiSuccess {Object[]} data.relationships.delivery.data
  * @apiSuccess {String} data.relationships.delivery.data.type
  * @apiSuccess {Number} data.relationships.delivery.data.id
- * @apiSuccess {Object} data.relationships.merchandises
- * @apiSuccess {Object[]} data.relationships.merchandises.data
- * @apiSuccess {Object} data.relationships.merchandises.data.type
- * @apiSuccess {Number} data.relationships.merchandises.data.id
+ * @apiSuccess {Number} data.relationships.delivery.links
+ * @apiSuccess {Number} data.relationships.delivery.links.related
+ * @apiSuccess {Object} data.relationships.merchandisesSold
+ * @apiSuccess {Object[]} data.relationships.merchandisesSold.data
+ * @apiSuccess {Object} data.relationships.merchandisesSold.data.type
+ * @apiSuccess {Number} data.relationships.merchandisesSold.data.id
  * @apiSuccess {Object} data.links
  * @apiSuccess {String} data.links.self
+ * 
  * @apiSuccess {Object[]} included
- * @apiSuccess {String} included.type
- * @apiSuccess {Number} included.id
- * @apiSuccess {Object} included.attributes
- * @apiSuccess {String} included.attributes.name
- * @apiSuccess {String} included.attributes.code
- * @apiSuccess {String} included.attributes.description
- * @apiSuccess {String} included.type
- * @apiSuccess {Number} included.id
- * @apiSuccess {Object} included.attributes
- * @apiSuccess {Number} included.attributes.retail_price
- * @apiSuccess {Number} included.attributes.purchase_price
- * @apiSuccess {Object} included.relationships
- * @apiSuccess {Object} included.relationships.product
- * @apiSuccess {Object} included.relationships.product.data
- * @apiSuccess {Object} included.relationships.product.data.type
- * @apiSuccess {Object} included.relationships.product.data.id
+ * @apiUSe ResponseMerchandiseSaleJson
  */
-class SaleSchema extends SchemaProvider
+class SaleSchema extends BaseSchema
 {
 
-    protected $resourceType = 'sales';
+    /**
+     * Get resource type.
+     *
+     * @return string
+     */
+    public function getType(): string
+    {
+        return 'sales';
+    }
 
     /**
      * Get resource identity.
@@ -55,7 +53,7 @@ class SaleSchema extends SchemaProvider
      *
      * @return string
      */
-    public function getId($resource)
+    public function getId($resource): ?string
     {
         return $resource->getKey();
     }
@@ -67,7 +65,7 @@ class SaleSchema extends SchemaProvider
      *
      * @return array
      */
-    public function getAttributes($resource)
+    public function getAttributes($resource, ContextInterface $context): iterable
     {
         return [
             Sale::CODE => $resource->getAttribute(Sale::CODE),
@@ -79,33 +77,25 @@ class SaleSchema extends SchemaProvider
     }
 
     /**
+     * Get resource relationships.
+     *
      * @param Sale $resource
-     * @param bool $isPrimary
-     * @param array $includeRelationships
+     *
      * @return array
      */
-    public function getRelationships($resource, $isPrimary, array $includeRelationships)
+    public function getRelationships($resource, ContextInterface $context): iterable
     {
         return [
             Sale::RELATIONSHIP_DELIVERY => [
-                self::DATA => function () use ($resource) {
-                    return $resource->delivery()->getEager();
-                }
+                self::RELATIONSHIP_DATA => $resource->delivery()->get(),
+                self::RELATIONSHIP_LINKS_SELF => false,
+                self::RELATIONSHIP_LINKS_RELATED => true,
             ],
-            Sale::RELATIONSHIP_MERCHANDISES => [
-                self::DATA => function () use ($resource) {
-                    return $resource->merchandises()->getEager();
-                }
+            Sale::RELATIONSHIP_MERCHANDISES_SOLD => [
+                self::RELATIONSHIP_DATA => $resource->merchandisesSold()->get(),
+                self::RELATIONSHIP_LINKS_SELF => false,
+                self::RELATIONSHIP_LINKS_RELATED => false,
             ],
-        ];
-    }
-
-    public function getIncludePaths()
-    {
-        return [
-            Sale::RELATIONSHIP_DELIVERY,
-            Sale::RELATIONSHIP_MERCHANDISES,
-            Sale::RELATIONSHIP_MERCHANDISES . '.' . Merchandise::RELATIONSHIP_PRODUCT,
         ];
     }
 

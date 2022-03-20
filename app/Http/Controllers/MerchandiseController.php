@@ -125,10 +125,16 @@ class MerchandiseController extends RestController
      */
     private function getEncoder()
     {
-        return $this->createEncoder([
+        $entityMap = [
             Merchandise::class => MerchandiseSchema::class,
             Product::class => ProductSchema::class,
-        ]);
+        ];
+
+        $includedPaths = [
+            Merchandise::RELATIONSHIP_PRODUCT,
+        ];
+
+        return $this->createEncoder($entityMap, $includedPaths);
     }
 
     private function getMerchandiseService()

@@ -181,10 +181,16 @@ class ClientController extends ContactableController
      */
     private function getEncoder()
     {
-        return $this->createEncoder([
+        $entityMap = [
             Client::class => ClientSchema::class,
             Contact::class => ContactSchema::class,
-        ]);
+        ];
+
+        $includedPaths = [
+            Client::RELATIONSHIP_CONTACTS,
+        ];
+
+        return $this->createEncoder($entityMap, $includedPaths);
     }
 
     private function getClientService()

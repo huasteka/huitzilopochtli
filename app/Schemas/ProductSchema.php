@@ -3,7 +3,8 @@
 namespace App\Schemas;
 
 use App\Product;
-use Neomerx\JsonApi\Schema\SchemaProvider;
+use Neomerx\JsonApi\Schema\BaseSchema;
+use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
 /**
  * @apiDefine ResponseProductJson
@@ -16,10 +17,18 @@ use Neomerx\JsonApi\Schema\SchemaProvider;
  * @apiSuccess {Object} data.links
  * @apiSuccess {String} data.links.self
  */
-class ProductSchema extends SchemaProvider
+class ProductSchema extends BaseSchema
 {
 
-    protected $resourceType = 'products';
+    /**
+     * Get resource type.
+     *
+     * @return string
+     */
+    public function getType(): string
+    {
+        return 'products';
+    }
 
     /**
      * Get resource identity.
@@ -28,7 +37,7 @@ class ProductSchema extends SchemaProvider
      *
      * @return string
      */
-    public function getId($resource)
+    public function getId($resource): ?string
     {
         return $resource->getKey();
     }
@@ -40,13 +49,25 @@ class ProductSchema extends SchemaProvider
      *
      * @return array
      */
-    public function getAttributes($resource)
+    public function getAttributes($resource, ContextInterface $context): iterable
     {
         return [
             Product::NAME => $resource->getAttribute(Product::NAME),
             Product::CODE => $resource->getAttribute(Product::CODE),
             Product::DESCRIPTION => $resource->getAttribute(Product::DESCRIPTION),
         ];
+    }
+
+    /**
+     * Get resource relationships.
+     *
+     * @param Product $resource
+     *
+     * @return array
+     */
+    public function getRelationships($resource, ContextInterface $context): iterable
+    {
+        return [];
     }
 
 }

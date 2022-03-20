@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Contact;
 use App\Delivery;
 use App\Merchandise;
+use App\MerchandisePurchase;
 use App\Product;
 use App\Purchase;
+use App\Supplier;
+use App\Schemas\ContactSchema;
 use App\Schemas\DeliverySchema;
 use App\Schemas\MerchandiseSchema;
+use App\Schemas\MerchandisePurchaseSchema;
 use App\Schemas\ProductSchema;
 use App\Schemas\PurchaseSchema;
+use App\Schemas\SupplierSchema;
 use App\Services\Purchase\PurchaseService;
 use App\Util\Pagination;
 use Illuminate\Http\Request;
@@ -134,12 +140,35 @@ class PurchaseController extends RestController
      */
     private function getEncoder()
     {
-        return $this->createEncoder([
+        $entityMap = [
             Purchase::class => PurchaseSchema::class,
+            Delivery::class => DeliverySchema::class,
+            MerchandisePurchase::class => MerchandisePurchaseSchema::class,
+            Supplier::class => SupplierSchema::class,
+            Contact::class => ContactSchema::class,
             Merchandise::class => MerchandiseSchema::class,
             Product::class => ProductSchema::class,
-            Delivery::class => DeliverySchema::class,
-        ]);
+        ];
+
+        $includedPaths = [
+            Purchase::RELATIONSHIP_DELIVERY,
+            Purchase::RELATIONSHIP_MERCHANDISES_PURCHASED,
+            implode('.', [
+                Purchase::RELATIONSHIP_MERCHANDISES_PURCHASED,
+                MerchandisePurchase::RELATIONSHIP_SUPPLIER,
+            ]),
+            implode('.', [
+                Purchase::RELATIONSHIP_MERCHANDISES_PURCHASED,
+                MerchandisePurchase::RELATIONSHIP_MERCHANDISE,
+            ]),
+            implode('.', [
+                Purchase::RELATIONSHIP_MERCHANDISES_PURCHASED,
+                MerchandisePurchase::RELATIONSHIP_MERCHANDISE,
+                Merchandise::RELATIONSHIP_PRODUCT,
+            ]),
+        ];
+
+        return $this->createEncoder($entityMap, $includedPaths);
     }
 
     private function getPurchaseService()

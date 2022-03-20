@@ -2,12 +2,21 @@
 namespace App\Schemas;
 
 use App\Delivery;
-use Neomerx\JsonApi\Schema\SchemaProvider;
+use Neomerx\JsonApi\Schema\BaseSchema;
+use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
-class DeliverySchema extends SchemaProvider
+class DeliverySchema extends BaseSchema
 {
 
-    protected $resourceType = 'deliveries';
+    /**
+     * Get resource type.
+     *
+     * @return string
+     */
+    public function getType(): string
+    {
+        return 'deliveries';
+    }
 
     /**
      * Get resource identity.
@@ -16,7 +25,7 @@ class DeliverySchema extends SchemaProvider
      *
      * @return string
      */
-    public function getId($resource)
+    public function getId($resource): ?string
     {
         return $resource->getKey();
     }
@@ -28,7 +37,7 @@ class DeliverySchema extends SchemaProvider
      *
      * @return array
      */
-    public function getAttributes($resource)
+    public function getAttributes($resource, ContextInterface $context): iterable
     {
         return [
             Delivery::SENT_AT => $resource->getAttribute(Delivery::SENT_AT),
@@ -38,25 +47,21 @@ class DeliverySchema extends SchemaProvider
     }
 
     /**
+     * Get resource relationships.
+     *
      * @param Delivery $resource
-     * @param bool $isPrimary
-     * @param array $includeRelationships
+     *
      * @return array
      */
-    public function getRelationships($resource, $isPrimary, array $includeRelationships)
+    public function getRelationships($resource, ContextInterface $context): iterable
     {
         return [
             Delivery::RELATIONSHIP_DELIVERY_ADDRESS => [
-                self::DATA => function () use ($resource) {
-                    return $resource->address()->getEager();
-                }
+                self::RELATIONSHIP_DATA => $resource->address()->get(),
+                self::RELATIONSHIP_LINKS_SELF => false,
+                self::RELATIONSHIP_LINKS_RELATED => true,
             ],
         ];
-    }
-
-    public function getIncludePaths()
-    {
-        return [Delivery::RELATIONSHIP_DELIVERY_ADDRESS];
     }
     
 }

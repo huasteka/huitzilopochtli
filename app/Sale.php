@@ -5,6 +5,8 @@ namespace App;
 final class Sale extends Deliverable
 {
 
+    const RELATIONSHIP_MERCHANDISES_SOLD = 'merchandisesSold';
+
     protected $fillable = [
         self::CODE,
         self::DESCRIPTION,
@@ -14,8 +16,13 @@ final class Sale extends Deliverable
     ];
 
     public function merchandises()
-    {
+    {   
         return $this->belongsToMany(Merchandise::class)->using(MerchandiseSale::class);
+    }
+
+    public function merchandisesSold()
+    {
+        return $this->hasMany(MerchandiseSale::class);
     }
 
     public function createMerchandise($merchandiseId, $quantity, $retailPrice = 0.00, $clientId = null)
