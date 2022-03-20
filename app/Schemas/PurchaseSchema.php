@@ -3,12 +3,48 @@ namespace App\Schemas;
 
 use App\Merchandise;
 use App\Purchase;
-use Neomerx\JsonApi\Schema\SchemaProvider;
+use Neomerx\JsonApi\Schema\BaseSchema;
+use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
-class PurchaseSchema extends SchemaProvider
+/**
+ * @apiDefine ResponsePurchaseJson
+ * @apiSuccess {String} data.type
+ * @apiSuccess {Number} data.id
+ * @apiSuccess {Object} data.attributes
+ * @apiSuccess {String} data.attributes.code
+ * @apiSuccess {Number} data.attributes.description
+ * @apiSuccess {Number} data.attributes.gross_value
+ * @apiSuccess {Number} data.attributes.net_value
+ * @apiSuccess {Number} data.attributes.discount
+ * @apiSuccess {Object} data.relationships.delivery
+ * @apiSuccess {Object[]} data.relationships.delivery.data
+ * @apiSuccess {String} data.relationships.delivery.data.type
+ * @apiSuccess {Number} data.relationships.delivery.data.id
+ * @apiSuccess {Number} data.relationships.delivery.links
+ * @apiSuccess {Number} data.relationships.delivery.links.related
+ * @apiSuccess {Object} data.relationships.merchandisesPurchased
+ * @apiSuccess {Object[]} data.relationships.merchandisesPurchased.data
+ * @apiSuccess {Object} data.relationships.merchandisesPurchased.data.type
+ * @apiSuccess {Number} data.relationships.merchandisesPurchased.data.id
+ * @apiSuccess {Object} data.links
+ * @apiSuccess {String} data.links.self
+ * 
+ * @apiSuccess {Object[]} included
+ * @apiUSe ResponseMerchandisePurchaseJson
+ * 
+ */
+class PurchaseSchema extends BaseSchema
 {
 
-    protected $resourceType = 'purchases';
+    /**
+     * Get resource type.
+     *
+     * @return string
+     */
+    public function getType(): string
+    {
+        return 'purchases';
+    }
 
     /**
      * Get resource identity.
@@ -17,7 +53,7 @@ class PurchaseSchema extends SchemaProvider
      *
      * @return string
      */
-    public function getId($resource)
+    public function getId($resource): ?string
     {
         return $resource->getKey();
     }
@@ -29,7 +65,7 @@ class PurchaseSchema extends SchemaProvider
      *
      * @return array
      */
-    public function getAttributes($resource)
+    public function getAttributes($resource, ContextInterface $context): iterable
     {
         return [
             Purchase::CODE => $resource->getAttribute(Purchase::CODE),
@@ -46,28 +82,19 @@ class PurchaseSchema extends SchemaProvider
      * @param array $includeRelationships
      * @return array
      */
-    public function getRelationships($resource, $isPrimary, array $includeRelationships)
+    public function getRelationships($resource, ContextInterface $context): iterable
     {
         return [
             Purchase::RELATIONSHIP_DELIVERY => [
-                self::DATA => function () use ($resource) {
-                    return $resource->delivery()->getEager();
-                }
+                self::RELATIONSHIP_DATA => $resource->delivery()->get(),
+                self::RELATIONSHIP_LINKS_SELF => false,
+                self::RELATIONSHIP_LINKS_RELATED => true,
             ],
-            Purchase::RELATIONSHIP_MERCHANDISES => [
-                self::DATA => function () use ($resource) {
-                    return $resource->merchandises()->getEager();
-                }
+            Purchase::RELATIONSHIP_MERCHANDISES_PURCHASED => [
+                self::RELATIONSHIP_DATA => $resource->merchandisesPurchased()->get(),
+                self::RELATIONSHIP_LINKS_SELF => false,
+                self::RELATIONSHIP_LINKS_RELATED => false,
             ],
-        ];
-    }
-
-    public function getIncludePaths()
-    {
-        return [
-            Purchase::RELATIONSHIP_DELIVERY, 
-            Purchase::RELATIONSHIP_MERCHANDISES,
-            Purchase::RELATIONSHIP_MERCHANDISES . '.' . Merchandise::RELATIONSHIP_PRODUCT
         ];
     }
     

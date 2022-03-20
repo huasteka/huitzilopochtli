@@ -21,11 +21,14 @@ final class SupplierController extends ContactableController
     }
 
     /**
-     * @api {get} /suppliers Fetch supplier list
+     * @api {get} /suppliers Fetch a list of suppliers
      * @apiVersion 1.0.0
      * @apiGroup Supplier
      * @apiName GetSuppliers
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiUse RequestPagination
+     * @apiSuccess {Object[]} data
+     * @apiUse ResponseSupplierJson
      */
     public function index(Request $request)
     {
@@ -39,6 +42,9 @@ final class SupplierController extends ContactableController
      * @apiGroup Supplier
      * @apiName CreateSupplier
      * @apiHeader {String} Authorization Generated JWT token
+     * @apiUse RequestSupplierJson
+     * @apiUse ResponseSupplierJson
+     * @apiUse ResponseErrorJson
      */
     public function store(Request $request)
     {
@@ -48,11 +54,13 @@ final class SupplierController extends ContactableController
     }
 
     /**
-     * @api {get} /suppliers/:supplierId Fetch supplier
+     * @api {get} /suppliers/:supplierId Fetch a single supplier
      * @apiVersion 1.0.0
      * @apiGroup Supplier
      * @apiName GetSupplier
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiSuccess {Object} data
+     * @apiUse ResponseSupplierJson
      */
     public function show($supplierId)
     {
@@ -60,11 +68,14 @@ final class SupplierController extends ContactableController
     }
 
     /**
-     * @api {put} /suppliers/:supplierId Update supplier
+     * @api {put} /suppliers/:supplierId Update an existing supplier
      * @apiVersion 1.0.0
      * @apiGroup Supplier
      * @apiName UpdateSupplier
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} supplierId
+     * @apiUse RequestSupplierJson
+     * @apiUse ResponseErrorJson
      */
     public function update(Request $request, $supplierId)
     {
@@ -79,11 +90,13 @@ final class SupplierController extends ContactableController
     }
 
     /**
-     * @api {delete} /suppliers/:supplierId Delete supplier
+     * @api {delete} /suppliers/:supplierId Delete an existing supplier
      * @apiVersion 1.0.0
      * @apiGroup Supplier
      * @apiName DeleteSupplier
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} supplierId
+     * @apiUse ResponseErrorJson
      */
     public function destroy($supplierId)
     {
@@ -99,6 +112,9 @@ final class SupplierController extends ContactableController
      * @apiGroup Supplier
      * @apiName CreateSupplierContact
      * @apiHeader {String} Authorization Generated JWT token
+     * @apiParam {Number} supplierId
+     * @apiUse RequestContactJson
+     * @apiUse ResponseErrorJson
      */
     public function storeContact(Request $request, $supplierId)
     {
@@ -115,6 +131,10 @@ final class SupplierController extends ContactableController
      * @apiGroup Supplier
      * @apiName UpdateSupplierContact
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} supplierId
+     * @apiParam {Number} contactId
+     * @apiUse RequestContactJson
+     * @apiUse ResponseErrorJson
      */
     public function updateContact(Request $request, $supplierId, $contactId)
     {
@@ -131,6 +151,9 @@ final class SupplierController extends ContactableController
      * @apiGroup Supplier
      * @apiName DeleteSupplierContact
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} supplierId
+     * @apiParam {Number} contactId
+     * @apiUse ResponseErrorJson
      */
     public function destroyContact(Request $request, $supplierId, $contactId)
     {
@@ -150,12 +173,24 @@ final class SupplierController extends ContactableController
         return $callback($supplier);
     }
 
+    /**
+     * @apiDefine RequestSupplierJson
+     * @apiBody {String} name
+     * @apiBody {String} trade_name
+     * @apiBody {String} legal_document_code
+     */
     private function getEncoder()
     {
-        return $this->createEncoder([
+        $entityMap = [
             Supplier::class => SupplierSchema::class,
             Contact::class => ContactSchema::class,
-        ]);
+        ];
+
+        $includedPaths = [
+            Supplier::RELATIONSHIP_CONTACTS,
+        ];
+
+        return $this->createEncoder($entityMap, $includedPaths);
     }
 
     private function getSupplierService()

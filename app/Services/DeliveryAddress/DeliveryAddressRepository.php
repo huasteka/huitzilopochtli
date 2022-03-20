@@ -24,16 +24,17 @@ class DeliveryAddressRepository extends ContactableRepository
         if ($deliveryAddress->isDefault()) {
             DeliveryAddress::where(DeliveryAddress::IS_DEFAULT, '=', true)->update([DeliveryAddress::IS_DEFAULT => false]);
         }
-        if ($deliveryAddress->save() && $this->hasContacts($request)) {
-            $deliveryAddress->createContacts($this->readContactCollection($request));
+        if ($deliveryAddress->save()) {
+            $deliveryAddress->createContactByAttributes($this->readContactAttributes($request));
         }
         return $deliveryAddress;
     }
 
     public function update(Request $request, DeliveryAddress $deliveryAddress)
     {
-        $contactCollection = $this->readContactCollection($request);
-        $deliveryAddress->updateContact(array_pop($contactCollection));
+        $contactAttributes = $this->readContactAttributes($request);
+        $contact = new Contact($contactAttributes);
+        $deliveryAddress->updateContact($contact);
     }
 
     private function readDeliveryAddress(Request $request)
@@ -41,9 +42,9 @@ class DeliveryAddressRepository extends ContactableRepository
         return $this->getRequestReader()->readAttributes($request, DeliveryAddress::class);
     }
     
-    private function readContactCollection(Request $request)
+    private function readContactAttributes(Request $request)
     {
-        return $this->getRequestReader()->readCollection($request, Contact::class);
+        return $this->getRequestReader()->readAttributes($request, Contact::class);
     }
 
 }

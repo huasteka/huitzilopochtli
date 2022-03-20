@@ -9,19 +9,20 @@ use Illuminate\Http\JsonResponse;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use Neomerx\JsonApi\Contracts\Encoder\EncoderInterface;
 use Neomerx\JsonApi\Encoder\Encoder;
-use Neomerx\JsonApi\Encoder\EncoderOptions;
 
 abstract class RestController extends BaseController
 {
 
     /**
+     * Creates an instance of JSON API encoder
+     * 
      * @param array $schemas
+     * 
      * @return EncoderInterface
      */
-    protected function createEncoder(array $schemas)
+    protected function createEncoder(array $schemas, array $includedPaths = [])
     {
-        $encoderOptions = new EncoderOptions(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-        return Encoder::instance($schemas, $encoderOptions);
+        return Encoder::instance($schemas)->withIncludedPaths($includedPaths);
     }
 
     protected function withJson(JsonResponseFormatter $jsonResponse, $status = 200)

@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Contact;
+use App\Client;
 use App\Delivery;
 use App\Merchandise;
+use App\MerchandiseSale;
 use App\Product;
 use App\Sale;
+use App\Schemas\ContactSchema;
+use App\Schemas\ClientSchema;
 use App\Schemas\DeliverySchema;
 use App\Schemas\MerchandiseSchema;
+use App\Schemas\MerchandiseSaleSchema;
 use App\Schemas\ProductSchema;
 use App\Schemas\SaleSchema;
 use App\Services\Sale\SaleService;
@@ -31,6 +37,9 @@ class SaleController extends RestController
      * @apiGroup Sale
      * @apiName GetSales
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiUse RequestPagination
+     * @apiSuccess {Object[]} data
+     * @apiUse ResponseSaleJson
      */
     public function index(Request $request)
     {
@@ -44,6 +53,9 @@ class SaleController extends RestController
      * @apiGroup Sale
      * @apiName CreateSale
      * @apiHeader {String} Authorization Generated JWT token
+     * @apiUse RequestSaleJson
+     * @apiUse ResponseSaleJson
+     * @apiUse ResponseErrorJson
      */
     public function store(Request $request)
     {
@@ -58,6 +70,9 @@ class SaleController extends RestController
      * @apiGroup Sale
      * @apiName GetSale
      * @apiHeader {String} Authorization User generated JWT token
+     *  @apiParam {Number} saleId
+     * @apiSuccess {Object} data
+     * @apiUse ResponseSaleJson
      */
     public function show($saleId)
     {
@@ -70,6 +85,9 @@ class SaleController extends RestController
      * @apiGroup Sale
      * @apiName UpdateSale
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} saleId
+     * @apiUse RequestSaleJson
+     * @apiUse ResponseErrorJson
      */
     public function update(Request $request, $saleId)
     {
@@ -86,6 +104,8 @@ class SaleController extends RestController
      * @apiGroup Sale
      * @apiName DeleteSale
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} saleId
+     * @apiUse ResponseErrorJson
      */
     public function destroy($saleId)
     {
@@ -104,14 +124,50 @@ class SaleController extends RestController
         return $callback($sale);
     }
 
+    /**
+     * @apiDefine RequestSaleJson
+     * @apiBody {String} code
+     * @apiBody {Number} [gross_value]
+     * @apiBody {Number} [discount]
+     * @apiBody {Number} [net_value]
+     * @apiBody {String} [description]
+     * @apiBody {Object[]} merchandises
+     * @apiBody {Number} merchandises.id
+     * @apiBody {Number} merchandises.client_id
+     * @apiBody {Number} merchandises.retail_price
+     * @apiBody {Number} merchandises.quantity
+     */
     private function getEncoder()
     {
-        return $this->createEncoder([
+        $entityMap = [
             Sale::class => SaleSchema::class,
+            Delivery::class => DeliverySchema::class,
+            MerchandiseSale::class => MerchandiseSaleSchema::class,
+            Client::class => ClientSchema::class,
+            Contact::class => ContactSchema::class,
             Merchandise::class => MerchandiseSchema::class,
             Product::class => ProductSchema::class,
-            Delivery::class => DeliverySchema::class,
-        ]);
+        ];
+
+        $includedPaths = [
+            Sale::RELATIONSHIP_DELIVERY,
+            Sale::RELATIONSHIP_MERCHANDISES_SOLD,
+            implode('.', [
+                Sale::RELATIONSHIP_MERCHANDISES_SOLD,
+                MerchandiseSale::RELATIONSHIP_CLIENT,
+            ]),
+            implode('.', [
+                Sale::RELATIONSHIP_MERCHANDISES_SOLD,
+                MerchandiseSale::RELATIONSHIP_MERCHANDISE,
+            ]),
+            implode('.', [
+                Sale::RELATIONSHIP_MERCHANDISES_SOLD,
+                MerchandiseSale::RELATIONSHIP_MERCHANDISE,
+                Merchandise::RELATIONSHIP_PRODUCT,
+            ]),
+        ];
+
+        return $this->createEncoder($entityMap, $includedPaths);
     }
 
     private function getSaleService()

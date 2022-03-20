@@ -20,11 +20,14 @@ final class ProductController extends RestController
     }
 
     /**
-     * @api {get} /products Fetch product list
+     * @api {get} /products Fetch a list of products
      * @apiVersion 1.0.0
      * @apiGroup Product
      * @apiName GetProducts
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiUse RequestPagination
+     * @apiSuccess {Object[]} data
+     * @apiUse ResponseProductJson
      */
     public function index(Request $request)
     {
@@ -38,6 +41,9 @@ final class ProductController extends RestController
      * @apiGroup Product
      * @apiName CreateProduct
      * @apiHeader {String} Authorization Generated JWT token
+     * @apiUse RequestProductJson
+     * @apiUse ResponseProductJson
+     * @apiUse ResponseErrorJson
      */
     public function store(Request $request)
     {
@@ -47,11 +53,14 @@ final class ProductController extends RestController
     }
 
     /**
-     * @api {get} /products/:productId Fetch product
+     * @api {get} /products/:productId Fetch a single product
      * @apiVersion 1.0.0
      * @apiGroup Product
      * @apiName GetProduct
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} productId
+     * @apiSuccess {Object} data
+     * @apiUse ResponseProductJson
      */
     public function show($productId)
     {
@@ -59,11 +68,14 @@ final class ProductController extends RestController
     }
 
     /**
-     * @api {get} /products/product/:productCode Fetch product by code
+     * @api {get} /products/:productCode/details Fetch a single product by code
      * @apiVersion 1.0.0
      * @apiGroup Product
      * @apiName GetProductByCode
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {String} productCode
+     * @apiSuccess {Object} data
+     * @apiUse ResponseProductJson
      */
     public function findByCode($productCode)
     {
@@ -72,11 +84,14 @@ final class ProductController extends RestController
     }
 
     /**
-     * @api {put} /products/:productId Update product
+     * @api {put} /products/:productId Update an existent product
      * @apiVersion 1.0.0
      * @apiGroup Product
      * @apiName UpdateProduct
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} productId
+     * @apiUse RequestProductJson
+     * @apiUse ResponseErrorJson
      */
     public function update(Request $request, $productId)
     {
@@ -91,11 +106,13 @@ final class ProductController extends RestController
     }
 
     /**
-     * @api {delete} /products/:productId Delete product
+     * @api {delete} /products/:productId Delete an existent product
      * @apiVersion 1.0.0
      * @apiGroup Product
      * @apiName DeleteProduct
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} productId
+     * @apiUse ResponseErrorJson
      */
     public function destroy($productId)
     {
@@ -114,6 +131,12 @@ final class ProductController extends RestController
         return $callback($product);
     }
 
+    /**
+     * @apiDefine RequestProductJson
+     * @apiBody {String} name
+     * @apiBody {String} code
+     * @apiBody {String} [description]
+     */
     private function getEncoder()
     {
         return $this->createEncoder([Product::class => ProductSchema::class]);

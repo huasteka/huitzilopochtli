@@ -3,12 +3,48 @@
 namespace App\Schemas;
 
 use App\Supplier;
-use Neomerx\JsonApi\Schema\SchemaProvider;
+use Neomerx\JsonApi\Schema\BaseSchema;
+use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
-class SupplierSchema extends SchemaProvider
+/**
+ * @apiDefine ResponseSupplierJson
+ * @apiSuccess {String} data.type
+ * @apiSuccess {Number} data.id
+ * @apiSuccess {Object} data.attributes
+ * @apiSuccess {String} data.attributes.name
+ * @apiSuccess {String} data.attributes.trade_name
+ * @apiSuccess {String} data.attributes.legal_document_code
+ * @apiSuccess {Object} data.relationships
+ * @apiSuccess {Object} data.relationships.contacts
+ * @apiSuccess {Object[]} data.relationships.contacts.data
+ * @apiSuccess {String} data.relationships.contacts.data.type
+ * @apiSuccess {Number} data.relationships.contacts.data.id
+ * @apiSuccess {Object} data.links
+ * @apiSuccess {String} data.links.self
+ * @apiSuccess {Object[]} included
+ * @apiSuccess {String} included.type
+ * @apiSuccess {Number} included.id
+ * @apiSuccess {Object} included.attributes
+ * @apiSuccess {String} included.attributes.phone
+ * @apiSuccess {String} included.attributes.address
+ * @apiSuccess {String} included.attributes.address_complement
+ * @apiSuccess {String} included.attributes.postal_code
+ * @apiSuccess {String} included.attributes.country
+ * @apiSuccess {String} included.attributes.region
+ * @apiSuccess {String} included.attributes.city
+ */
+class SupplierSchema extends BaseSchema
 {
 
-    protected $resourceType = 'suppliers';
+    /**
+     * Get resource type.
+     *
+     * @return string
+     */
+    public function getType(): string
+    {
+        return 'suppliers';
+    }
 
     /**
      * Get resource identity.
@@ -17,7 +53,7 @@ class SupplierSchema extends SchemaProvider
      *
      * @return string
      */
-    public function getId($resource)
+    public function getId($resource): ?string
     {
         return $resource->getKey();
     }
@@ -29,7 +65,7 @@ class SupplierSchema extends SchemaProvider
      *
      * @return array
      */
-    public function getAttributes($resource)
+    public function getAttributes($resource, ContextInterface $context): iterable
     {
         return [
             Supplier::NAME => $resource->getAttribute(Supplier::NAME),
@@ -39,25 +75,21 @@ class SupplierSchema extends SchemaProvider
     }
 
     /**
+     * Get resource relationships.
+     *
      * @param Supplier $resource
-     * @param bool $isPrimary
-     * @param array $includeRelationships
+     *
      * @return array
      */
-    public function getRelationships($resource, $isPrimary, array $includeRelationships)
+    public function getRelationships($resource, ContextInterface $context): iterable
     {
         return [
             Supplier::RELATIONSHIP_CONTACTS => [
-                self::DATA => function () use ($resource) {
-                    return $resource->contacts()->getEager();
-                }
+                self::RELATIONSHIP_DATA => $resource->contacts()->get(),
+                self::RELATIONSHIP_LINKS_SELF => false,
+                self::RELATIONSHIP_LINKS_RELATED => true,
             ],
         ];
-    }
-
-    public function getIncludePaths()
-    {
-        return [Supplier::RELATIONSHIP_CONTACTS];
     }
 
 }

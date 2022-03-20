@@ -6,3 +6,5 @@ Homestead.yaml
 .env
 /public
 /node_modules
+*.lock
+*-lock.json

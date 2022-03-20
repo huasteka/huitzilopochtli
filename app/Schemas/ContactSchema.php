@@ -3,12 +3,26 @@
 namespace App\Schemas;
 
 use App\Contact;
-use Neomerx\JsonApi\Schema\SchemaProvider;
+use Neomerx\JsonApi\Schema\BaseSchema;
+use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
-class ContactSchema extends SchemaProvider
+/**
+ * @apiDefine RequestContactJson
+ * @apiBody {String} phone
+ * @apiBody {String} address
+ * @apiBody {String} address_complement
+ * @apiBody {String} postal_code
+ * @apiBody {String} city
+ * @apiBody {String} region
+ * @apiBody {String} country
+ */
+class ContactSchema extends BaseSchema
 {
 
-    protected $resourceType = 'contacts';
+    public function getType(): string
+    {
+        return 'contacts';
+    }
 
     /**
      * Get resource identity.
@@ -17,7 +31,7 @@ class ContactSchema extends SchemaProvider
      *
      * @return string
      */
-    public function getId($resource)
+    public function getId($resource): ?string
     {
         return $resource->getKey();
     }
@@ -29,7 +43,7 @@ class ContactSchema extends SchemaProvider
      *
      * @return array
      */
-    public function getAttributes($resource)
+    public function getAttributes($resource, ContextInterface $context): iterable
     {
         return [
             Contact::PHONE => $resource->getAttribute(Contact::PHONE),
@@ -40,6 +54,18 @@ class ContactSchema extends SchemaProvider
             Contact::REGION => $resource->getAttribute(Contact::REGION),
             Contact::CITY => $resource->getAttribute(Contact::CITY),
         ];
+    }
+
+    /**
+     * Get resource relationships.
+     *
+     * @param Contact $resource
+     *
+     * @return array
+     */
+    public function getRelationships($resource, ContextInterface $context): iterable
+    {
+        return [];
     }
 
 }

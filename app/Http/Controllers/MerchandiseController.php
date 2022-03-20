@@ -21,11 +21,14 @@ class MerchandiseController extends RestController
     }
 
     /**
-     * @api {get} /merchandises Fetch merchandise list
+     * @api {get} /merchandises Fetch a list of merchandises
      * @apiVersion 1.0.0
      * @apiGroup Merchandise
      * @apiName GetMerchandises
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiUse RequestPagination
+     * @apiSuccess {Object[]} data
+     * @apiUse ResponseMerchandiseJson
      */
     public function index(Request $request)
     {
@@ -39,6 +42,13 @@ class MerchandiseController extends RestController
      * @apiGroup Merchandise
      * @apiName CreateMerchandise
      * @apiHeader {String} Authorization Generated JWT token
+     * @apiUse RequestMerchandiseJson
+     * @apiBody {Object} [product]
+     * @apiBody {Object} [product.name]
+     * @apiBody {Object} [product.code]
+     * @apiBody {Object} [product.description]
+     * @apiUse ResponseMerchandiseJson
+     * @apiUse ResponseErrorJson
      */
     public function store(Request $request)
     {
@@ -48,11 +58,14 @@ class MerchandiseController extends RestController
     }
 
     /**
-     * @api {get} /merchandises/:merchandiseId Fetch merchandise
+     * @api {get} /merchandises/:merchandiseId Fetch a single merchandise
      * @apiVersion 1.0.0
      * @apiGroup Merchandise
      * @apiName GetMerchandise
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} merchandiseId
+     * @apiSuccess {Object} data
+     * @apiUse ResponseMerchandiseJson
      */
     public function show($merchandiseId)
     {
@@ -60,11 +73,14 @@ class MerchandiseController extends RestController
     }
 
     /**
-     * @api {put} /merchandises/:merchandiseId Update merchandise
+     * @api {put} /merchandises/:merchandiseId Update an existent merchandise
      * @apiVersion 1.0.0
      * @apiGroup Merchandise
      * @apiName UpdateMerchandise
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} merchandiseId
+     * @apiUse RequestMerchandiseJson
+     * @apiUse ResponseErrorJson
      */
     public function update(Request $request, $merchandiseId)
     {
@@ -76,11 +92,13 @@ class MerchandiseController extends RestController
     }
 
     /**
-     * @api {delete} /merchandises/:merchandiseId Delete merchandise
+     * @api {delete} /merchandises/:merchandiseId Delete an existent merchandise
      * @apiVersion 1.0.0
      * @apiGroup Merchandise
      * @apiName DeleteMerchandise
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} merchandiseId
+     * @apiUse ResponseErrorJson
      */
     public function destroy($merchandiseId)
     {
@@ -99,12 +117,24 @@ class MerchandiseController extends RestController
         return $callback($merchandise);
     }
 
+    /**
+     * @apiDefine RequestMerchandiseJson
+     * @apiBody {Number} product_id
+     * @apiBody {Number} retail_price
+     * @apiBody {Number} purchase_price
+     */
     private function getEncoder()
     {
-        return $this->createEncoder([
+        $entityMap = [
             Merchandise::class => MerchandiseSchema::class,
             Product::class => ProductSchema::class,
-        ]);
+        ];
+
+        $includedPaths = [
+            Merchandise::RELATIONSHIP_PRODUCT,
+        ];
+
+        return $this->createEncoder($entityMap, $includedPaths);
     }
 
     private function getMerchandiseService()
