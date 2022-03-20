@@ -54,7 +54,7 @@ class ClientController extends ContactableController
     }
 
     /**
-     * @api {get} /accounts/:clientId Fetch a single client
+     * @api {get} /clients/:clientId Fetch a single client
      * @apiVersion 1.0.0
      * @apiGroup Client
      * @apiName GetClient
@@ -69,7 +69,7 @@ class ClientController extends ContactableController
     }
 
     /**
-     * @api {put} /accounts/:clientId Update an existing client
+     * @api {put} /clients/:clientId Update an existing client
      * @apiVersion 1.0.0
      * @apiGroup Client
      * @apiName UpdateClient
@@ -91,7 +91,7 @@ class ClientController extends ContactableController
     }
 
     /**
-     * @api {delete} /accounts/:clientId Delete an existing client
+     * @api {delete} /clients/:clientId Delete an existing client
      * @apiVersion 1.0.0
      * @apiGroup Client
      * @apiName DeleteClient
@@ -127,7 +127,7 @@ class ClientController extends ContactableController
     }
 
     /**
-     * @api {put} /accounts/:clientId/contacts/:contactId Update client's contact
+     * @api {put} /clients/:clientId/contacts/:contactId Update client's contact
      * @apiVersion 1.0.0
      * @apiGroup Client
      * @apiName UpdateClientContact
@@ -147,7 +147,7 @@ class ClientController extends ContactableController
     }
 
     /**
-     * @api {delete} /accounts/:clientId/contacts/:contactId Delete client's contact
+     * @api {delete} /clients/:clientId/contacts/:contactId Delete client's contact
      * @apiVersion 1.0.0
      * @apiGroup Client
      * @apiName DeleteClientContact

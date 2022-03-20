@@ -5,6 +5,21 @@ use App\DeliveryAddress;
 use Neomerx\JsonApi\Schema\BaseSchema;
 use Neomerx\JsonApi\Contracts\Schema\ContextInterface;
 
+/**
+ * @apiDefine ResponseDeliveryAddressJson
+ * @apiSuccess {String} data.type
+ * @apiSuccess {Number} data.id
+ * @apiSuccess {Object} data.attributes
+ * @apiSuccess {Boolean} data.attributes.is_default
+ * @apiSuccess {Object} data.attributes.contacts
+ * @apiSuccess {String} data.attributes.contacts.phone
+ * @apiSuccess {String} data.attributes.contacts.address
+ * @apiSuccess {String} data.attributes.contacts.address_complement
+ * @apiSuccess {String} data.attributes.contacts.postal_code
+ * @apiSuccess {String} data.attributes.contacts.city
+ * @apiSuccess {String} data.attributes.contacts.region
+ * @apiSuccess {String} data.attributes.contacts.country
+ */
 class DeliveryAddressSchema extends BaseSchema
 {
     /**
