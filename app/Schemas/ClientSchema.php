@@ -5,6 +5,32 @@ namespace App\Schemas;
 use App\Client;
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
+/**
+ * @apiDefine ResponseClientJson
+ * @apiSuccess {String} data.type
+ * @apiSuccess {Number} data.id
+ * @apiSuccess {Object} data.attributes
+ * @apiSuccess {String} data.attributes.name
+ * @apiSuccess {String} data.attributes.legal_document_code
+ * @apiSuccess {Object} data.relationships
+ * @apiSuccess {Object} data.relationships.contacts
+ * @apiSuccess {Object[]} data.relationships.contacts.data
+ * @apiSuccess {String} data.relationships.contacts.data.type
+ * @apiSuccess {Number} data.relationships.contacts.data.id
+ * @apiSuccess {Object} data.links
+ * @apiSuccess {String} data.links.self
+ * @apiSuccess {Object[]} included
+ * @apiSuccess {String} included.type
+ * @apiSuccess {Number} included.id
+ * @apiSuccess {Object} included.attributes
+ * @apiSuccess {String} included.attributes.phone
+ * @apiSuccess {String} included.attributes.address
+ * @apiSuccess {String} included.attributes.address_complement
+ * @apiSuccess {String} included.attributes.postal_code
+ * @apiSuccess {String} included.attributes.country
+ * @apiSuccess {String} included.attributes.region
+ * @apiSuccess {String} included.attributes.city
+ */
 class ClientSchema extends SchemaProvider
 {
 

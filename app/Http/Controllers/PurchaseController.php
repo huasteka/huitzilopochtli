@@ -26,11 +26,14 @@ class PurchaseController extends RestController
     }
 
     /**
-     * @api {get} /purchases Fetch purchases list
+     * @api {get} /purchases Fetch a list of purchases
      * @apiVersion 1.0.0
      * @apiGroup Purchase
      * @apiName GetPurchases
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiUse RequestPagination
+     * @apiSuccess {Object[]} data
+     * @apiUse ResponsePurchaseJson
      */
     public function index(Request $request)
     {
@@ -44,6 +47,9 @@ class PurchaseController extends RestController
      * @apiGroup Purchase
      * @apiName CreatePurchase
      * @apiHeader {String} Authorization Generated JWT token
+     * @apiUse RequestPurchaseJson
+     * @apiUse ResponsePurchaseJson
+     * @apiUse ResponseErrorJson
      */
     public function store(Request $request)
     {
@@ -53,11 +59,14 @@ class PurchaseController extends RestController
     }
 
     /**
-     * @api {get} /purchases/:purchaseId Fetch purchase
+     * @api {get} /purchases/:purchaseId Fetch a single purchase
      * @apiVersion 1.0.0
      * @apiGroup Purchase
      * @apiName GetPurchase
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} purchaseId
+     * @apiSuccess {Object} data
+     * @apiUse ResponsePurchaseJson
      */
     public function show($purchaseId)
     {
@@ -65,11 +74,14 @@ class PurchaseController extends RestController
     }
 
     /**
-     * @api {put} /purchases/:purchaseId Update purchase
+     * @api {put} /purchases/:purchaseId Update an existent purchase
      * @apiVersion 1.0.0
      * @apiGroup Purchase
      * @apiName UpdatePurchase
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} purchaseId
+     * @apiUse RequestPurchaseJson
+     * @apiUse ResponseErrorJson
      */
     public function update(Request $request, $purchaseId)
     {
@@ -81,11 +93,14 @@ class PurchaseController extends RestController
     }
 
     /**
-     * @api {delete} /purchases/:purchaseId Delete purchase
+     * @api {delete} /purchases/:purchaseId Delete an existent purchase
      * @apiVersion 1.0.0
      * @apiGroup Purchase
      * @apiName DeletePurchase
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} purchaseId
+     * @apiUse ResponseErrorJson
      */
     public function destroy($purchaseId)
     {
@@ -104,6 +119,19 @@ class PurchaseController extends RestController
         return $callback($purchase);
     }
 
+    /**
+     * @apiDefine RequestPurchaseJson
+     * @apiBody {String} code
+     * @apiBody {Number} [gross_value]
+     * @apiBody {Number} [discount]
+     * @apiBody {Number} [net_value]
+     * @apiBody {String} [description]
+     * @apiBody {Object[]} merchandises
+     * @apiBody {Number} merchandises.id
+     * @apiBody {Number} merchandises.supplier_id
+     * @apiBody {Number} merchandises.purchase_price
+     * @apiBody {Number} merchandises.quantity
+     */
     private function getEncoder()
     {
         return $this->createEncoder([

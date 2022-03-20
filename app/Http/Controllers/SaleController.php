@@ -104,6 +104,19 @@ class SaleController extends RestController
         return $callback($sale);
     }
 
+    /**
+     * @apiDefine RequestSaleJson
+     * @apiBody {String} code
+     * @apiBody {Number} [gross_value]
+     * @apiBody {Number} [discount]
+     * @apiBody {Number} [net_value]
+     * @apiBody {String} [description]
+     * @apiBody {Object[]} merchandises
+     * @apiBody {Number} merchandises.id
+     * @apiBody {Number} merchandises.client_id
+     * @apiBody {Number} merchandises.retail_price
+     * @apiBody {Number} merchandises.quantity
+     */
     private function getEncoder()
     {
         return $this->createEncoder([

@@ -5,6 +5,16 @@ namespace App\Schemas;
 use App\Contact;
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
+/**
+ * @apiDefine RequestContactJson
+ * @apiBody {String} phone
+ * @apiBody {String} address
+ * @apiBody {String} address_complement
+ * @apiBody {String} postal_code
+ * @apiBody {String} city
+ * @apiBody {String} region
+ * @apiBody {String} country
+ */
 class ContactSchema extends SchemaProvider
 {
 

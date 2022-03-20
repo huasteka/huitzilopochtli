@@ -2,10 +2,20 @@
 
 namespace App\Schemas;
 
-
 use App\Product;
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
+/**
+ * @apiDefine ResponseProductJson
+ * @apiSuccess {String} data.type
+ * @apiSuccess {Number} data.id
+ * @apiSuccess {Object} data.attributes
+ * @apiSuccess {String} data.attributes.name
+ * @apiSuccess {String} data.attributes.code
+ * @apiSuccess {String} data.attributes.description
+ * @apiSuccess {Object} data.links
+ * @apiSuccess {String} data.links.self
+ */
 class ProductSchema extends SchemaProvider
 {
 

@@ -4,6 +4,28 @@ namespace App\Schemas;
 use App\Merchandise;
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
+/**
+ * @apiDefine ResponseMerchandiseJson
+ * @apiSuccess {String} data.type
+ * @apiSuccess {Number} data.id
+ * @apiSuccess {Object} data.attributes
+ * @apiSuccess {String} data.attributes.retail_price
+ * @apiSuccess {String} data.attributes.purchase_price
+ * @apiSuccess {Object} data.relationships
+ * @apiSuccess {Object} data.relationships.product
+ * @apiSuccess {Object[]} data.relationships.product.data
+ * @apiSuccess {String} data.relationships.product.data.type
+ * @apiSuccess {Number} data.relationships.product.data.id
+ * @apiSuccess {Object} data.links
+ * @apiSuccess {String} data.links.self
+ * @apiSuccess {Object[]} included
+ * @apiSuccess {String} included.type
+ * @apiSuccess {Number} included.id
+ * @apiSuccess {Object} included.attributes
+ * @apiSuccess {String} included.attributes.name
+ * @apiSuccess {String} included.attributes.code
+ * @apiSuccess {String} included.attributes.description
+ */
 class MerchandiseSchema extends SchemaProvider
 {
 

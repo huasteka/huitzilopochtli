@@ -21,11 +21,14 @@ class ClientController extends ContactableController
     }
 
     /**
-     * @api {get} /clients Fetch clients list
+     * @api {get} /clients Fetch a list of clients
      * @apiVersion 1.0.0
      * @apiGroup Client
-     * @apiName GetClients
+     * @apiName GetClientList
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiUse RequestPagination
+     * @apiSuccess {Object[]} data
+     * @apiUse ResponseClientJson
      */
     public function index(Request $request)
     {
@@ -39,6 +42,9 @@ class ClientController extends ContactableController
      * @apiGroup Client
      * @apiName CreateClient
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiUse RequestClientJson
+     * @apiUse ResponseClientJson
+     * @apiUse ResponseErrorJson
      */
     public function store(Request $request)
     {
@@ -48,11 +54,14 @@ class ClientController extends ContactableController
     }
 
     /**
-     * @api {get} /accounts/:clientId Fetch client
+     * @api {get} /accounts/:clientId Fetch a single client
      * @apiVersion 1.0.0
      * @apiGroup Client
      * @apiName GetClient
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} clientId
+     * @apiSuccess {Object} data
+     * @apiUse ResponseClientJson
      */
     public function show($clientId)
     {
@@ -60,11 +69,14 @@ class ClientController extends ContactableController
     }
 
     /**
-     * @api {put} /accounts/:clientId Update client
+     * @api {put} /accounts/:clientId Update an existing client
      * @apiVersion 1.0.0
      * @apiGroup Client
      * @apiName UpdateClient
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} clientId
+     * @apiUse RequestClientJson
+     * @apiUse ResponseErrorJson
      */
     public function update(Request $request, $clientId)
     {
@@ -79,11 +91,13 @@ class ClientController extends ContactableController
     }
 
     /**
-     * @api {delete} /accounts/:clientId Delete client
+     * @api {delete} /accounts/:clientId Delete an existing client
      * @apiVersion 1.0.0
      * @apiGroup Client
      * @apiName DeleteClient
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} clientId
+     * @apiUse ResponseErrorJson
      */
     public function destroy($clientId)
     {
@@ -99,6 +113,9 @@ class ClientController extends ContactableController
      * @apiGroup Client
      * @apiName CreateClientContact
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} clientId
+     * @apiUse RequestContactJson
+     * @apiUse ResponseErrorJson
      */
     public function storeContact(Request $request, $clientId)
     {
@@ -115,6 +132,10 @@ class ClientController extends ContactableController
      * @apiGroup Client
      * @apiName UpdateClientContact
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} clientId
+     * @apiParam {Number} contactId
+     * @apiUse RequestContactJson
+     * @apiUse ResponseErrorJson
      */
     public function updateContact(Request $request, $clientId, $contactId)
     {
@@ -131,6 +152,9 @@ class ClientController extends ContactableController
      * @apiGroup Client
      * @apiName DeleteClientContact
      * @apiHeader {String} Authorization User generated JWT token
+     * @apiParam {Number} clientId
+     * @apiParam {Number} contactId
+     * @apiUse ResponseErrorJson
      */
     public function destroyContact(Request $request, $clientId, $contactId)
     {
@@ -150,6 +174,11 @@ class ClientController extends ContactableController
         return $callback($client);
     }
 
+    /**
+     * @apiDefine RequestClientJson
+     * @apiBody {String} name
+     * @apiBody {String} legal_document_code
+     */
     private function getEncoder()
     {
         return $this->createEncoder([

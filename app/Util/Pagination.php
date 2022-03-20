@@ -3,6 +3,11 @@ namespace App\Util;
 
 use Illuminate\Http\Request;
 
+/**
+ * @apiDefine RequestPagination
+ * @apiQuery {Number} [pageSize]
+ * @apiQuery {Number} [currentPage]
+ */
 class Pagination
 {
     const DEFAULT_PAGE_SIZE = 10;
