@@ -32,6 +32,14 @@ class DeliveryAddressRepository extends ContactableRepository
 
     public function update(Request $request, DeliveryAddress $deliveryAddress)
     {
+        $attributes = $this->readDeliveryAddress($request);
+        $updatedDeliveryAddress = new DeliveryAddress($attributes);
+        if ($updatedDeliveryAddress->isDefault()) {
+            DeliveryAddress::where(DeliveryAddress::IS_DEFAULT, '=', true)->update([DeliveryAddress::IS_DEFAULT => false]);
+        }
+
+        $deliveryAddress->update($attributes);
+
         $contactAttributes = $this->readContactAttributes($request);
         $contact = new Contact($contactAttributes);
         $deliveryAddress->updateContact($contact);
