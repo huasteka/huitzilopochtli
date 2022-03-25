@@ -86,8 +86,9 @@ class MerchandisePurchaseSchema extends BaseSchema
      * Get resource attributes.
      *
      * @param MerchandisePurchase $resource
+     * @param ContextInterface $context
      *
-     * @return array
+     * @return array|iterable
      */
     public function getAttributes($resource, ContextInterface $context): iterable
     {
@@ -101,8 +102,9 @@ class MerchandisePurchaseSchema extends BaseSchema
      * Get resource relationships.
      *
      * @param MerchandisePurchase $resource
+     * @param ContextInterface $context
      *
-     * @return array
+     * @return array|iterable
      */
     public function getRelationships($resource, ContextInterface $context): iterable
     {

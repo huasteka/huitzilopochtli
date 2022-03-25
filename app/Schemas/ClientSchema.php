@@ -61,8 +61,9 @@ class ClientSchema extends BaseSchema
      * Get resource attributes.
      *
      * @param Client $resource
+     * @param ContextInterface $context
      *
-     * @return array
+     * @return array|iterable
      */
     public function getAttributes($resource, ContextInterface $context): iterable
     {
@@ -76,8 +77,9 @@ class ClientSchema extends BaseSchema
      * Get resource relationships.
      *
      * @param Client $resource
+     * @param ContextInterface $context
      *
-     * @return array
+     * @return array|iterable
      */
     public function getRelationships($resource, ContextInterface $context): iterable
     {

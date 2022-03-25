@@ -40,8 +40,9 @@ class ContactSchema extends BaseSchema
      * Get resource attributes.
      *
      * @param Contact $resource
+     * @param ContextInterface $context
      *
-     * @return array
+     * @return array|iterable
      */
     public function getAttributes($resource, ContextInterface $context): iterable
     {
@@ -60,8 +61,9 @@ class ContactSchema extends BaseSchema
      * Get resource relationships.
      *
      * @param Contact $resource
+     * @param ContextInterface $context
      *
-     * @return array
+     * @return array|iterable
      */
     public function getRelationships($resource, ContextInterface $context): iterable
     {

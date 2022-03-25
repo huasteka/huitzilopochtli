@@ -62,8 +62,9 @@ class PurchaseSchema extends BaseSchema
      * Get resource attributes.
      *
      * @param Purchase $resource
+     * @param ContextInterface $context
      *
-     * @return array
+     * @return array|iterable
      */
     public function getAttributes($resource, ContextInterface $context): iterable
     {
@@ -73,14 +74,17 @@ class PurchaseSchema extends BaseSchema
             Purchase::GROSS_VALUE => $resource->getAttribute(Purchase::GROSS_VALUE),
             Purchase::NET_VALUE => $resource->getAttribute(Purchase::NET_VALUE),
             Purchase::DISCOUNT => $resource->getAttribute(Purchase::DISCOUNT),
+            Purchase::CREATED_AT => $resource->getAttribute(Purchase::CREATED_AT),
         ];
     }
 
     /**
+     * Get resource relationships.
+     *
      * @param Purchase $resource
-     * @param bool $isPrimary
-     * @param array $includeRelationships
-     * @return array
+     * @param ContextInterface $context
+     *
+     * @return array|iterable
      */
     public function getRelationships($resource, ContextInterface $context): iterable
     {
