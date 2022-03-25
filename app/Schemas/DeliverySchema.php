@@ -34,8 +34,9 @@ class DeliverySchema extends BaseSchema
      * Get resource attributes.
      *
      * @param Delivery $resource
+     * @param ContextInterface $context
      *
-     * @return array
+     * @return array|iterable
      */
     public function getAttributes($resource, ContextInterface $context): iterable
     {
@@ -50,8 +51,9 @@ class DeliverySchema extends BaseSchema
      * Get resource relationships.
      *
      * @param Delivery $resource
+     * @param ContextInterface $context
      *
-     * @return array
+     * @return array|iterable
      */
     public function getRelationships($resource, ContextInterface $context): iterable
     {

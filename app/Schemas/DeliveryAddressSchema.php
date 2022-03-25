@@ -31,7 +31,7 @@ class DeliveryAddressSchema extends BaseSchema
     {
         return 'delivery_addresses';
     }
-    
+
     /**
      * Get resource identity.
      *
@@ -44,12 +44,14 @@ class DeliveryAddressSchema extends BaseSchema
         return $resource->getKey();
     }
 
+
     /**
      * Get resource attributes.
      *
      * @param DeliveryAddress $resource
+     * @param ContextInterface $context
      *
-     * @return array
+     * @return array|iterable
      */
     public function getAttributes($resource, ContextInterface $context): iterable
     {
@@ -63,8 +65,9 @@ class DeliveryAddressSchema extends BaseSchema
      * Get resource relationships.
      *
      * @param DeliveryAddress $resource
+     * @param ContextInterface $context
      *
-     * @return array
+     * @return array|iterable
      */
     public function getRelationships($resource, ContextInterface $context): iterable
     {

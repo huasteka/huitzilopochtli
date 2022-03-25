@@ -62,8 +62,9 @@ class SaleSchema extends BaseSchema
      * Get resource attributes.
      *
      * @param Sale $resource
+     * @param ContextInterface $context
      *
-     * @return array
+     * @return array|iterable
      */
     public function getAttributes($resource, ContextInterface $context): iterable
     {
@@ -73,6 +74,7 @@ class SaleSchema extends BaseSchema
             Sale::GROSS_VALUE => $resource->getAttribute(Sale::GROSS_VALUE),
             Sale::NET_VALUE => $resource->getAttribute(Sale::NET_VALUE),
             Sale::DISCOUNT => $resource->getAttribute(Sale::DISCOUNT),
+            Sale::CREATED_AT => $resource->getAttribute(Sale::CREATED_AT),
         ];
     }
 
@@ -80,8 +82,9 @@ class SaleSchema extends BaseSchema
      * Get resource relationships.
      *
      * @param Sale $resource
+     * @param ContextInterface $context
      *
-     * @return array
+     * @return array|iterable
      */
     public function getRelationships($resource, ContextInterface $context): iterable
     {
