@@ -16,6 +16,7 @@ final class MerchandiseSale extends Pivot
     const RELATIONSHIP_MERCHANDISE = 'merchandise';
 
     protected $fillable = [
+        self::CLIENT_ID,
         self::QUANTITY,
         self::RETAIL_PRICE,
     ];

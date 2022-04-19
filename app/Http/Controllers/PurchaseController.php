@@ -44,7 +44,8 @@ class PurchaseController extends RestController
     public function index(Request $request)
     {
         $pageSize = Pagination::getInstance($request)->getPageSize();
-        return $this->withJsonApi($this->getEncoder()->encodeData(Purchase::paginate($pageSize)));
+        $resultSet = Purchase::orderBy('created_at', 'desc')->paginate($pageSize);
+        return $this->withJsonApi($this->getEncoder()->encodeData($resultSet));
     }
 
     /**
