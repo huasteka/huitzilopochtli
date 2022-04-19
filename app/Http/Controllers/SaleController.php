@@ -44,7 +44,8 @@ class SaleController extends RestController
     public function index(Request $request)
     {
         $pageSize = Pagination::getInstance($request)->getPageSize();
-        return $this->withJsonApi($this->getEncoder()->encodeData(Sale::paginate($pageSize)));
+        $resultSet = Sale::orderBy('created_at', 'desc')->paginate($pageSize);
+        return $this->withJsonApi($this->getEncoder()->encodeData($resultSet));
     }
 
     /**
