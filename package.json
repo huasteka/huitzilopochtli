@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "description": "An open source purchases and sales management API",
   "scripts": {
-    "apidoc": "./node_modules/.bin/apidoc -i ./app/Exceptions ./app/Schemas ./app/Util ./app/Http/Controllers -o ./public",
-    "postinstall": "npm run apidoc"
+    "postinstall": "npm run apidoc",
+    "apidoc": "./node_modules/.bin/apidoc -i ./app/Exceptions ./app/Schemas ./app/Util ./app/Http/Controllers -o ./public"
   },
   "license": "GPL-3.0-only",
   "repository": {

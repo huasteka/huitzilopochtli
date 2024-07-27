@@ -18,7 +18,7 @@ Huitzilopochtli is an open source purchases and sales management API developed w
 
 To download and build the project, open a terminal and execute:
 
-```
+```sh
 git clone https://github.com/huasteka/huitzilopochtli.git
 cd huitzilopochtli
 composer install
@@ -41,12 +41,26 @@ DB_USERNAME=[database_user]
 DB_PASSWORD=[database_password]
 ```
 
+To run the database migrations, open a terminal and execute:
+
+```sh
+php artisan migrate
+```
+
 ## Tests
 
 To execute all tests, open a terminal and execute:
 
-```
+```sh
 php vendor/bin/phpunit
+```
+
+## Run
+
+To run the application, open a terminal and execute:
+
+```sh
+php artisan serve
 ```
 
 ## License
