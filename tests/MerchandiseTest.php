@@ -13,7 +13,7 @@ class MerchandiseTest extends TestCase
                 $product->merchandises()->save(factory(App\Merchandise::class)->make());
             });
         $productsList = $collection->all();
-        assertThat(count($productsList), equalTo($productsQuantity));
+        $this->assertThat(count($productsList), $this->equalTo($productsQuantity));
         foreach ($productsList as $product) {
             $this->seeInDatabase('merchandises', $this->convertObjectToArray($product->merchandises()->first()));
         }

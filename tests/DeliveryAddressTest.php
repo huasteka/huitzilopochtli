@@ -13,7 +13,7 @@ class DeliveryAddressTest extends TestCase
                 $dA->contacts()->save(factory(App\Contact::class)->make());
             });
         $deliveryAddressList = $this->convertObjectToArray($deliveryAddressList);
-        assertThat(count($deliveryAddressList), equalTo($deliveryAddressQuantity));
+        $this->assertThat(count($deliveryAddressList), $this->equalTo($deliveryAddressQuantity));
         foreach ($deliveryAddressList as $deliveryAddressInDatabase) {
             $this->seeInDatabase('delivery_addresses', $deliveryAddressInDatabase);
         }
@@ -58,21 +58,20 @@ class DeliveryAddressTest extends TestCase
     public function testShouldCreateDeliveryAddressWithContactRequest()
     {
         $contact = factory(App\Contact::class)->make();
-        $deliveryAddress = factory(App\DeliveryAddress::class)->make();
-        $deliveryAddress->setAttribute(App\DeliveryAddress::RELATIONSHIP_CONTACTS, [$contact]);
-        $deliveryAddressArray = $this->convertObjectToArray($deliveryAddress);
-        $httpRequest = $this->json('POST', '/api/delivery_addresses', $deliveryAddressArray)
+        $contact->setAttribute(App\DeliveryAddress::IS_DEFAULT, true);
+        $deliveryAddressArray = $this->convertObjectToArray($contact);
+        $this->json('POST', '/api/delivery_addresses', $deliveryAddressArray)
             ->seeStatusCode(Illuminate\Http\Response::HTTP_CREATED)
-            ->seeJson([App\DeliveryAddress::IS_DEFAULT => $deliveryAddress->getAttribute(App\DeliveryAddress::IS_DEFAULT)]);
-        foreach ($deliveryAddress->getAttribute(App\DeliveryAddress::RELATIONSHIP_CONTACTS) as $contact) {
-            $httpRequest->seeJson([App\Contact::PHONE => $contact->phone]);
-            $httpRequest->seeJson([App\Contact::ADDRESS => $contact->address]);
-            $httpRequest->seeJson([App\Contact::ADDRESS_COMPLEMENT => $contact->address_complement]);
-            $httpRequest->seeJson([App\Contact::POSTAL_CODE => $contact->postal_code]);
-            $httpRequest->seeJson([App\Contact::CITY => $contact->city]);
-            $httpRequest->seeJson([App\Contact::REGION => $contact->region]);
-            $httpRequest->seeJson([App\Contact::COUNTRY => $contact->country]);
-        }
+            ->seeJson([
+                App\DeliveryAddress::IS_DEFAULT => $contact->getAttribute(App\DeliveryAddress::IS_DEFAULT),
+                App\Contact::PHONE => $contact->phone,
+                App\Contact::ADDRESS => $contact->address,
+                App\Contact::ADDRESS_COMPLEMENT => $contact->address_complement,
+                App\Contact::POSTAL_CODE => $contact->postal_code,
+                App\Contact::CITY => $contact->city,
+                App\Contact::REGION => $contact->region,
+                App\Contact::COUNTRY => $contact->country,
+            ]);
     }
 
     public function testShouldUpdateDeliveryAddressRequest()
@@ -82,14 +81,15 @@ class DeliveryAddressTest extends TestCase
         $contact->setAttribute(App\Contact::ADDRESS, 'This is an updated address');
         $contact->setAttribute(App\Contact::ADDRESS_COMPLEMENT, 'This is an updated address complement');
         $contact->setAttribute(App\Contact::PHONE, '+66 66 6666-6666');
-        $deliveryAddressArray = $this->convertObjectToArray($deliveryAddress);
-        $deliveryAddressArray[App\DeliveryAddress::RELATIONSHIP_CONTACTS] = [$this->convertObjectToArray($contact)];
-        $this->json('PUT', "/api/delivery_addresses/{$deliveryAddress->getKey()}", $deliveryAddressArray)
+        $contact->setAttribute(App\DeliveryAddress::IS_DEFAULT, $deliveryAddress->getAttribute(App\DeliveryAddress::IS_DEFAULT));
+        $contactArray = $this->convertObjectToArray($contact);
+        $this->json('PUT', "/api/delivery_addresses/{$deliveryAddress->getKey()}", $contactArray)
             ->seeStatusCode(Illuminate\Http\Response::HTTP_NO_CONTENT)
             ->seeInDatabase('delivery_addresses', [
                 'id' => $deliveryAddress->getKey(),
             ])
             ->seeInDatabase('contacts', [
+                App\Contact::CONTACTABLE_ID => $deliveryAddress->getKey(),
                 App\Contact::ADDRESS => $contact->getAttribute(App\Contact::ADDRESS),
                 App\Contact::ADDRESS_COMPLEMENT => $contact->getAttribute(App\Contact::ADDRESS_COMPLEMENT),
                 App\Contact::PHONE => $contact->getAttribute(App\Contact::PHONE),

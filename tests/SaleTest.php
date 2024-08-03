@@ -8,7 +8,7 @@ class SaleTest extends DeliverableTest
         $saleQuantity = 10;
         $salesList = $this->createSale($saleQuantity);
         $salesList = $this->convertObjectToArray($salesList);
-        assertThat(count($salesList), equalTo($saleQuantity));
+        $this->assertThat(count($salesList), $this->equalTo($saleQuantity));
         foreach ($salesList as $saleInDatabase) {
             $this->seeInDatabase('sales', $saleInDatabase);
         }

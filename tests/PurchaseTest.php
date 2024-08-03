@@ -8,7 +8,7 @@ class PurchaseTest extends DeliverableTest
         $purchaseQuantity = 10;
         $purchasesList = $this->createPurchase($purchaseQuantity);
         $purchasesList = $this->convertObjectToArray($purchasesList);
-        assertThat(count($purchasesList), equalTo($purchaseQuantity));
+        $this->assertThat(count($purchasesList), $this->equalTo($purchaseQuantity));
         foreach ($purchasesList as $purchaseInDatabase) {
             $this->seeInDatabase('purchases', $purchaseInDatabase);
         }
