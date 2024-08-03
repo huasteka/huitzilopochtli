@@ -8,7 +8,7 @@ class ProductTest extends TestCase
         $productQuantity = 10;
         $productList = factory(App\Product::class)->times($productQuantity)->create();
         $productList = $this->convertObjectToArray($productList);
-        assertThat(count($productList), equalTo($productQuantity));
+        $this->assertThat(count($productList), $this->equalTo($productQuantity));
         foreach ($productList as $productInDatabase) {
             $this->seeInDatabase('products', $productInDatabase);
         }

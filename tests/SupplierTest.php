@@ -8,7 +8,7 @@ class SupplierTest extends TestCase
         $supplierQuantity = 10;
         $supplierList = factory(App\Supplier::class)->times($supplierQuantity)->create();
         $supplierList = $this->convertObjectToArray($supplierList);
-        assertThat(count($supplierList), equalTo($supplierQuantity));
+        $this->assertThat(count($supplierList), $this->equalTo($supplierQuantity));
         foreach ($supplierList as $supplierInDatabase) {
             $this->seeInDatabase('suppliers', $supplierInDatabase);
         }

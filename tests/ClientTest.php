@@ -8,7 +8,7 @@ class ClientTest extends TestCase
         $clientQuantity = 10;
         $clientList = factory(App\Client::class)->times($clientQuantity)->create();
         $clientList = $this->convertObjectToArray($clientList);
-        assertThat(count($clientList), equalTo($clientQuantity));
+        $this->assertThat(count($clientList), $this->equalTo($clientQuantity));
         foreach ($clientList as $clientInDatabase) {
             $this->seeInDatabase('clients', $clientInDatabase);
         }
@@ -50,13 +50,13 @@ class ClientTest extends TestCase
         $contactQuantity = 3;
         $contacts = factory(App\Contact::class)->times($contactQuantity)->make();
         $client = factory(App\Client::class)->make();
-        $client->setAttribute(App\Client::RELATIONSHIP_CONTACTS, $contacts);
+        $client->setAttribute(App\Contactable::RELATIONSHIP_CONTACTS, $contacts);
         $clientArray = $this->convertObjectToArray($client);
         $httpRequest = $this->json('POST', '/api/clients', $clientArray)
             ->seeStatusCode(Illuminate\Http\Response::HTTP_CREATED)
             ->seeJson([App\Client::NAME => $client->getAttribute(App\Client::NAME)])
             ->seeJson([App\Client::LEGAL_DOCUMENT_CODE => $client->getAttribute(App\Client::LEGAL_DOCUMENT_CODE)]);
-        foreach ($client->getAttribute(App\Client::RELATIONSHIP_CONTACTS) as $contact) {
+        foreach ($client->getAttribute(App\Contactable::RELATIONSHIP_CONTACTS) as $contact) {
             $httpRequest->seeJson([App\Contact::PHONE => $contact->phone]);
             $httpRequest->seeJson([App\Contact::ADDRESS => $contact->address]);
             $httpRequest->seeJson([App\Contact::ADDRESS_COMPLEMENT => $contact->address_complement]);
