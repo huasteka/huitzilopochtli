@@ -30,6 +30,7 @@ jobs:
       DB_USERNAME: postgres 
       CACHE_DRIVER: file 
       QUEUE_DRIVER: sync
+      XDEBUG_MODE: coverage
       CC_TEST_REPORTER_ID: dd59bebb5353eb14190743ab2ca416d13e31733e760c47fb376ef3565f0679ea
 
     # Add steps to the job
@@ -49,7 +50,8 @@ jobs:
       - run:
           name: "Install and enable XDebug"
           command: |
-            sudo pecl install xdebug-3.1
+            sudo pecl channel-update pecl.php.net
+            sudo pecl install xdebug-3.0.4
             sudo docker-php-ext-enable xdebug
       - run:
           name: "Setup Code Climate"
