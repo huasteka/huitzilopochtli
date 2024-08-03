@@ -1,10 +1,8 @@
 # Huitzilopochtli
 
-[![Travis](https://img.shields.io/travis/huasteka/huitzilopochtli.svg?style=flat-square)](https://travis-ci.org/huasteka/huitzilopochtli)
-[![GitHub issues](https://img.shields.io/github/issues/huasteka/huitzilopochtli.svg?style=flat-square)](https://github.com/huasteka/huitzilopochtli/issues)
-[![Maintainability](https://api.codeclimate.com/v1/badges/53d7c83ee31c34096261/maintainability)](https://codeclimate.com/github/huasteka/huitzilopochtli/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/53d7c83ee31c34096261/test_coverage)](https://codeclimate.com/github/huasteka/huitzilopochtli/test_coverage)
-[![Codecov](https://img.shields.io/codecov/c/github/huasteka/huitzilopochtli.svg?style=flat-square)](https://codecov.io/gh/huasteka/huitzilopochtli)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/huasteka/huitzilopochtli/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/huasteka/huitzilopochtli/tree/master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/685e5d7541593ab60ed6/maintainability)](https://codeclimate.com/github/huasteka/huitzilopochtli/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/685e5d7541593ab60ed6/test_coverage)](https://codeclimate.com/github/huasteka/huitzilopochtli/test_coverage)
 
 Huitzilopochtli is an open source purchases and sales management API developed with [Lumen Framework](https://lumen.laravel.com).
 

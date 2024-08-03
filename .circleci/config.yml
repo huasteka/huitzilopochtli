@@ -14,13 +14,12 @@ jobs:
     docker:
       # Specify the version you desire here
       # See: https://circleci.com/developer/images/image/cimg/base
+      - image: cimg/php:7.4.33
       - image: cimg/postgres:9.6
         environment:
           POSTGRES_DB: huitzilopochtli_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: ""
-
-    executor: php/default
 
     environment:
       APP_ENV: testing 
@@ -56,7 +55,6 @@ jobs:
       - run:
           name: "Generate and Upload Coverage Report"
           command: |
-            docker-php-ext-enable xdebug
             ./cc-test-reporter before-build
             vendor/bin/phpunit --coverage-clover clover.xml
             ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
