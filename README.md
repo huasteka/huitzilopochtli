@@ -11,8 +11,8 @@ Huitzilopochtli is an open source purchases and sales management API developed w
 ## Setup
 
 - [PostgreSQL](http://www.postgresql.org) (>= 9.3)
-- [PHP](http://php.net) (~ 5.6.14)
-- [Composer](https://getcomposer.org/) (>= 1.2.0)
+- [PHP](http://php.net) (~ 7.4)
+- [Composer](https://getcomposer.org/) (~ 2.7.7)
 
 ## Installation
 
